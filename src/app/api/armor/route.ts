@@ -2,9 +2,31 @@ import { NextResponse } from "next/server";
 import { loadWorkbook } from "@/data/totkDb";
 import type { CellValue } from "exceljs";
 
+export interface Armor { 
+  actorname: string;
+  euen_name: string;
+  belonging_set: string;
+  buying_price: number;
+  base_defense: number;
+  defense_1: number;
+  defense_2: number;
+  defense_3: number;
+  defense_4: number;
+  base_selling_price: number;
+  selling_price_1: number;
+  selling_price_2: number;
+  selling_price_3: number;
+  selling_price_4: number;
+  upgrade_1: string;
+  upgrade_2: string;
+  upgrade_3: string;
+  upgrade_4: string;
+  total_upgrades: string;
+}
+
 export interface ArmorListResponse {
-  armor: Record<string, string>[]
-  fields: Record<string, { title: string }>
+  armor: Armor[];
+  fields: Record<keyof Armor, { title: string }>;
 }
 
 export async function GET(): Promise<Response> {

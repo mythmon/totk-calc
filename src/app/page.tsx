@@ -1,9 +1,10 @@
 import type { ServerComponent } from "@/components/component";
-import type { ArmorListResponse } from "./api/armor/route";
+import type { Armor, ArmorListResponse } from "./api/armor/route";
+import Image from "next/image";
 
 const Home: ServerComponent = async () => {
   const data = await getData();
-  const keys = Object.keys(data.fields);
+  const keys: (keyof Armor)[] = Object.keys(data.fields) as (keyof Armor)[];
 
   return (
     <>
@@ -12,6 +13,7 @@ const Home: ServerComponent = async () => {
       <table>
         <thead>
           <tr>
+            <th>Image</th>
             {keys.map((k) => (
               <th key={`header-${k}`}>{data.fields[k]?.title ?? k}</th>
             ))}
@@ -20,6 +22,14 @@ const Home: ServerComponent = async () => {
         <tbody>
           {data.armor.map((d, i) => (
             <tr key={`row-${i}`}>
+              <td>
+                <Image
+                  width="64"
+                  height="64"
+                  alt={d["euen_name"]}
+                  src={`/api/armor/${d.actorname}/image.png`}
+                />
+              </td>
               {keys.map((k) => (
                 <td key={k}>{d[k]}</td>
               ))}

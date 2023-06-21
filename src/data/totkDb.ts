@@ -8,17 +8,10 @@ let workbook: Promise<Workbook> | null = null;
 export async function loadWorkbook(): Promise<Workbook> {
   if (!workbook) {
     workbook = (async () => {
-      console.log("loadWorkbook 1");
       const workbook = new excelJs.Workbook();
-      console.log("loadWorkbook 2");
-      const filePath = path.join(process.cwd(), 'totk-db.xlsx');
-      console.log("loadWorkbook 3", filePath);
+      const filePath = path.join(process.cwd(), "totk-db.xlsx");
       const stream = fs.createReadStream(filePath);
-      console.log("loadWorkbook 4");
-      const wb2 = await workbook.xlsx.read(stream);
-      console.log("loadWorkbook 5");
-      console.log("@@@ wb1 === wb2?", workbook === wb2);
-      console.log("loadWorkbook 6");
+      await workbook.xlsx.read(stream);
       return workbook;
     })();
   }
