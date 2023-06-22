@@ -26,6 +26,3 @@ export async function GET(_request: NextRequest, { params }: { params: { actorNa
 
   return new NextResponse(image.buffer);
 }
-
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';

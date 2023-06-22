@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.0.18",
     "@types/node": "20.3.1",
     "@types/react": "18.2.13",
     "@types/react-dom": "18.2.6",
@@ -29,6 +30,7 @@
     "vercel": "^30.2.2"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.9",
     "@tsconfig/esm": "^1.0.3",
     "@tsconfig/next": "^1.0.5",
     "@tsconfig/recommended": "^1.0.2",

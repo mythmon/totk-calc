@@ -1,3 +1,5 @@
+const typography = require("@tailwindcss/typography");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -11,5 +13,6 @@ module.exports = {
         sans: ['var(--font-inter)']
       }
     }
-  }
+  },
+  plugins: [typography]
 }
