@@ -1,14 +1,12 @@
 import type { Component, ServerComponent } from "@/components/component";
-import type { Armor, ArmorListResponse } from "../api/armor/route";
 import Image from "next/image";
 import { ArmorIcon, RupeeIcon } from "@/components/icons";
 import d3 from "@/lib/d3";
 import cx from "classnames";
+import { fetchArmorList, type Armor } from "@/data/totkDb";
 
 const Home: ServerComponent = async () => {
-  const data = await getData();
-
-  console.log({ data });
+  const data = await fetchArmorList();
   const armorsBySet = d3.group(data.armors, (d) => d.belonging_set);
 
   return (
@@ -20,10 +18,10 @@ const Home: ServerComponent = async () => {
         {Array.from(armorsBySet.entries(), ([setName, armors]) => {
           if (!setName || armors.length === 1) {
             return armors.map((armor) => (
-              <ArmorCard armor={armor} showSet={false} />
+              <ArmorCard key={`armor-${armor.actorname}`} armor={armor} showSet={false} />
             ));
           } else {
-            return <ArmorSetCard name={setName} armors={armors} />
+            return <ArmorSetCard key={`set-${setName}`} name={setName} armors={armors} />
           }
         })}
       </div>
@@ -119,9 +117,9 @@ const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors}) => {
       "grid grid-cols-[auto,8px,repeat(6,auto)] grid-rows-[auto,repeat(9,auto)]",
       "gap-x-4 gap-y-2"
     )}>
-      <h2 className="font-bold">{name} set</h2>
+      <h2 className="font-bold col-span-3">{name} set</h2>
       <div className="contents">
-        <div className="col-start-4 text-center">-</div>
+        <div className="text-center">-</div>
         <div className="text-center">★</div>
         <div className="text-center">★</div>
         <div className="text-center">★</div>
@@ -159,12 +157,6 @@ const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors}) => {
       ))}
     </div >
   );
-}
-
-async function getData(): Promise<ArmorListResponse> {
-  const res = await fetch("http://localhost:3000/api/armor");
-  if (!res.ok) throw new Error(`Error fetching armor data: ${res.status} ${res.statusText}\n${await res.text()}`);
-  return (await res.json()) as ArmorListResponse;
 }
 
 export default Home;
