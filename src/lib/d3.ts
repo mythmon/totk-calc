@@ -1,3 +1,5 @@
 import { group } from "d3-array";
 
-export default { group };
+const d3 = { group };
+
+export default d3;
