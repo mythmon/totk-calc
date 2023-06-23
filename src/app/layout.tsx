@@ -1,6 +1,8 @@
 import { type ComponentWithChildren } from "@/components/component";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
+import cx from "classnames";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,8 +18,9 @@ export const metadata = {
 const RootLayout: ComponentWithChildren = ({ children }) => {
   return (
     <html lang="en">
-      <body className={inter.variable}>
-        <div className="font-sans">{children}</div>
+      <body className={cx(inter.variable, "font-sans")}>
+        {children}
+        <Analytics />
       </body>
     </html>
   );
