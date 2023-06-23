@@ -10,7 +10,7 @@ export async function loadWorkbook(): Promise<Workbook> {
   if (!workbook) {
     workbook = (async () => {
       const workbook = new excelJs.Workbook();
-      await workbook.xlsx.readFile("totk-db.xlsx");
+      await workbook.xlsx.readFile(path.join(process.cwd(), "totk-db.xlsx"));
       return workbook;
     })();
   }
@@ -59,7 +59,7 @@ export async function fetchArmorList(): Promise<ArmorListResponse> {
   return await cached;
 }
 
-const CACHE_DIR = path.join(".", "cache");
+const CACHE_DIR = path.join(process.cwd(), "cache");
 const CACHE_JSON_PATH = path.join(CACHE_DIR, "armor-list.json");
 async function loadArmorList(): Promise<ArmorListResponse> {
   try {
