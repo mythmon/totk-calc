@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { loadWorkbook } from "@/data/totkDb";
 import type { CellValue } from "exceljs";
+import fs from "node:fs/promises";
 
 export interface Armor {
   actorname: string;
   euen_name: string;
   belonging_set: string;
+  icon: string;
   buying_price: number;
   defense_0: number;
   defense_1: number;
@@ -35,18 +37,33 @@ const unusedArmors = new Set([
   "Armor_1152_Head",
 ]);
 
+let cached: Promise<ArmorListResponse> | null = null;
+
 export async function GET(): Promise<Response> {
-  console.log("armor GET 1", Date.now() % 10_000);
+  if (!cached) cached = load();
+  return NextResponse.json(await cached);
+}
+
+const CACHE_JSON_PATH = "./cache/armor-list.json";
+async function load(): Promise<ArmorListResponse> {
+  try {
+    let json = await fs.readFile(CACHE_JSON_PATH, "utf-8");
+    return JSON.parse(json);
+  } catch (err) {
+    // that's ok
+  }
+
   const workbook = await loadWorkbook();
 
-  console.log("armor GET 2", Date.now() % 10_000);
   const armorSheet = workbook.getWorksheet("Armors");
-  const headers = (armorSheet.getRow(1).values as Array<string>)?.map((s) => ({
+  const headers: { original: string; slug: keyof Armor }[] = (
+    armorSheet.getRow(1).values as Array<string>
+  )?.map((s) => ({
     original: s,
     slug: fieldName(s),
   }));
 
-  const armors: unknown[] = [];
+  const armors: Armor[] = [];
   armorSheet.eachRow((row, rowNumber) => {
     if (!row.hasValues) return;
     if (rowNumber === 1) return;
@@ -58,26 +75,28 @@ export async function GET(): Promise<Response> {
         return [[key, d]];
       })
     ) as unknown as Armor;
+    item.icon = `/api/armor/${item.actorname}/image.png`;
     if (!unusedArmors.has(item.actorname)) {
       armors.push(item);
     }
   });
 
-  console.log("armor GET 3", Date.now() % 10_000);
   const fields = Object.fromEntries(
     Object.values(headers).map((d) => [d.slug, { title: d.original }])
-  );
-  delete fields["icon"];
+  ) as Record<keyof Armor, { title: string }>;
 
-  console.log("armor GET 4", Date.now() % 10_000);
-  return NextResponse.json({ armors, fields });
+  fs.writeFile(CACHE_JSON_PATH, JSON.stringify({ armors, fields }))
+    .then(() => console.log(`saved cached armor-list to ${CACHE_JSON_PATH}`))
+    .catch((err) => console.error("Error saving cache:", err));
+
+  return { armors, fields } as const;
 }
 
-function fieldName(s: string): string {
+function fieldName(s: string): keyof Armor {
   let slug = sluggify(s);
   if (slug === "base_defense") return "defense_0";
   if (slug === "base_selling_price") return "selling_price_0";
-  return slug;
+  return slug as keyof Armor;
 }
 
 function sluggify(s: string): string {
