@@ -2,6 +2,7 @@ import type { Workbook } from "exceljs";
 import * as excelJs from "exceljs";
 import fs from "node:fs/promises";
 import type { CellValue } from "exceljs";
+import path from "node:path";
 
 let workbook: Promise<Workbook> | null = null;
 
@@ -58,7 +59,8 @@ export async function fetchArmorList(): Promise<ArmorListResponse> {
   return await cached;
 }
 
-const CACHE_JSON_PATH = "./cache/armor-list.json";
+const CACHE_DIR = path.join(".", "cache");
+const CACHE_JSON_PATH = path.join(CACHE_DIR, "armor-list.json");
 async function loadArmorList(): Promise<ArmorListResponse> {
   try {
     let json = await fs.readFile(CACHE_JSON_PATH, "utf-8");
@@ -99,9 +101,15 @@ async function loadArmorList(): Promise<ArmorListResponse> {
     Object.values(headers).map((d) => [d.slug, { title: d.original }])
   ) as Record<keyof Armor, { title: string }>;
 
-  fs.writeFile(CACHE_JSON_PATH, JSON.stringify({ armors, fields }))
-    .then(() => console.log(`saved cached armor-list to ${CACHE_JSON_PATH}`))
-    .catch((err) => console.error("Error saving cache:", err));
+  (async () => {
+    try {
+      await fs.mkdir(CACHE_DIR, { recursive: true });
+      await fs.writeFile(CACHE_JSON_PATH, JSON.stringify({ armors, fields }));
+      console.log(`saved cached armor-list to ${CACHE_JSON_PATH}`);
+    } catch (err) {
+      console.error("Error saving cache:", err);
+    }
+  })();
 
   return { armors, fields } as const;
 }
