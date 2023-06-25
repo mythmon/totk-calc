@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "@tsconfig/recommended",
+    "@tsconfig/strictest",
+    "@tsconfig/node20"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "outDir": "./build"
+  },
+  "include": ["bin"],
+  "exclude": ["node_modules"]
+}

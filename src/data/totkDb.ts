@@ -91,7 +91,7 @@ async function loadArmorList(): Promise<ArmorListResponse> {
         return [[key, d]];
       })
     ) as unknown as Armor;
-    item.icon = `/api/armor/${item.actorname}/image.png`;
+    item.icon = `/image/armor/${item.actorname}.avif`;
     if (!unusedArmors.has(item.actorname)) {
       armors.push(item);
     }

@@ -14,8 +14,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "module": "esnext"
   },
   "include": [
     "next-env.d.ts",
@@ -24,5 +27,8 @@
     ".next/types/**/*.ts",
     "src/data/totkDb.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "bin"
+  ]
 }
