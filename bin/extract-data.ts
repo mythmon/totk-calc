@@ -70,9 +70,10 @@ async function main() {
       .split("_")
       .at(-1)
       ?.toLowerCase() as Armor["slot"];
-    item.set_display = `${
-      setDisplayNames[item.belonging_set] ?? item.belonging_set
-    } set`;
+    if (!(item.belonging_set?.trim().length)) item.belonging_set = null;
+    item.set_display = item.belonging_set
+      ? `${setDisplayNames[item.belonging_set] ?? item.belonging_set} set`
+      : null;
     if (!unusedArmors.has(item.actorname)) {
       armors.push(item);
     }

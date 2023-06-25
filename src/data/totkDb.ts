@@ -4,8 +4,8 @@ import path from "node:path";
 export interface Armor {
   actorname: string;
   euen_name: string;
-  belonging_set: string;
-  set_display: string;
+  belonging_set: string | null;
+  set_display: string | null;
   icon: string;
   slot: "head" | "upper" | "lower";
   buying_price: number;
