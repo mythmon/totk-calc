@@ -127,12 +127,26 @@ const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors }) => {
       </>
     );
   }
+
+  const hasUpgrades = !!armors[0]?.defense_1;
+  if (hasUpgrades) {
+    return <ArmorSetUpgradesCard name={name} armors={armors} />;
+  } else {
+    return <ArmorSetNoUpgradesCard name={name} armors={armors} />;
+  }
+};
+
+const ArmorSetUpgradesCard: Component<ArmorSetCardProps> = ({
+  name,
+  armors,
+}) => {
   return (
     <div
       className={cx(
         "bg-gray-200 rounded-lg p-2 pb-3",
         "w-full md:w-[28rem]",
-        "grid grid-cols-[minmax(64px,auto),8px,repeat(6,auto)] grid-rows-[auto,repeat(9,auto)]",
+        "grid grid-rows-[auto,repeat(9,auto)]",
+        "grid-cols-[minmax(64px,auto),8px,repeat(6,auto)]",
         "gap-x-2 md:gap-x-4 gap-y-2",
         "text-sm md:text-base"
       )}
@@ -147,7 +161,7 @@ const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors }) => {
       </div>
       {armors.map((armor) => (
         <>
-          <hr className="col-span-9 border-b border-slate-300 w-full my-1" />
+          <hr className="col-start-1 col-end-[-1] border-b border-slate-300 w-full my-1 col-span-9" />
           <div className="contents">
             <div className="col-start-1 row-span-3 text-center">
               <Image
@@ -168,7 +182,6 @@ const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors }) => {
               <div className="text-center">{armor.defense_3}</div>
               <div className="text-center">{armor.defense_4}</div>
             </div>
-            <div />
             <div className="contents">
               <RupeeIcon className="col-start-3" width="24" height="24" />
               <div className="text-center">{armor.selling_price_0}</div>
@@ -176,6 +189,55 @@ const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors }) => {
               <div className="text-center">{armor.selling_price_2}</div>
               <div className="text-center">{armor.selling_price_3}</div>
               <div className="text-center">{armor.selling_price_4}</div>
+            </div>
+          </div>
+        </>
+      ))}
+    </div>
+  );
+};
+
+const ArmorSetNoUpgradesCard: Component<ArmorSetCardProps> = ({
+  name,
+  armors,
+}) => {
+  return (
+    <div
+      className={cx(
+        "bg-gray-200 rounded-lg p-2 pb-3",
+        "w-full md:w-[20rem]",
+        "grid grid-rows-[auto,repeat(9,auto)]",
+        "grid-cols-[minmax(64px,auto),8px,auto,auto]",
+        "gap-x-2 md:gap-x-4 gap-y-2",
+        "text-sm md:text-base"
+      )}
+    >
+      <h2 className="font-bold col-span-2">{name} set</h2>
+      <div className="col-span-2 text-left font-light text-sm text-gray-600">
+        (no upgrades)
+      </div>
+      {armors.map((armor) => (
+        <>
+          <hr className="col-start-1 col-end-[-1] border-b border-slate-300 w-full my-1" />
+          <div className="contents">
+            <div className="col-start-1 row-span-3 text-center">
+              <Image
+                src={armor.icon}
+                width={96}
+                height={96}
+                alt={armor.euen_name}
+              />
+            </div>
+            <div className="col-start-3 col-span-2 font-medium">
+              {armor.euen_name}
+            </div>
+            <div className="contents">
+              <ArmorIcon className="col-start-3" width="24" height="24" />
+              <div className="text-left">{armor.defense_0}</div>
+            </div>
+            <div className="contents">
+              <RupeeIcon className="col-start-3" width="24" height="24" />
+              <div className="text-left">{armor.selling_price_0}</div>
             </div>
           </div>
         </>
