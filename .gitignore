@@ -38,3 +38,4 @@ next-env.d.ts
 cache
 public/images/armor/*.avif
 public/data/armors.json
+totk-db.xlsx

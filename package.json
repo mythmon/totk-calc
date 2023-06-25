@@ -15,6 +15,7 @@
     "classnames": "^2.3.2",
     "client-only": "^0.0.1",
     "d3-array": "^3.2.4",
+    "dotenv": "^16.3.1",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.6",
     "exceljs": "^4.3.0",

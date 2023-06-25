@@ -5,6 +5,9 @@ default:
 dev:
   yarn next dev
 
+env:
+  yarn vercel env pull
+
 build: build-data build-images build-next
 
 build-dev: build-data build-images
@@ -37,3 +40,4 @@ clean:
   rm -rf build
   rm -rf .next
   rm -rf cache
+  rm -rf totk-db.xlsx
