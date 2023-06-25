@@ -5,6 +5,7 @@ export interface Armor {
   actorname: string;
   euen_name: string;
   belonging_set: string;
+  set_display: string;
   icon: string;
   slot: "head" | "upper" | "lower";
   buying_price: number;

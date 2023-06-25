@@ -7,7 +7,7 @@ import { fetchArmorList, type Armor } from "@/data/totkDb";
 
 const Home: ServerComponent = async () => {
   const data = await fetchArmorList();
-  const armorsBySet = d3.group(data.armors, (d) => d.belonging_set);
+  const armorsBySet = d3.group(data.armors, (d) => d.set_display);
 
   return (
     <div className="p-2 md:p-8">
@@ -54,8 +54,8 @@ const ArmorCard: Component<ArmorCardProps> = ({ armor, showSet = true }) => {
       <h2 className="font-bold text-center">
         {armor.euen_name ?? armor.actorname}
       </h2>
-      {armor.belonging_set && showSet && (
-        <h3 className="text-center italic">{armor.belonging_set} set</h3>
+      {armor.set_display && showSet && (
+        <h3 className="text-center italic">{armor.set_display}</h3>
       )}
       <div className="flex-grow min-h-[1rem]" />
       <Image
@@ -154,7 +154,7 @@ const ArmorSetUpgradesCard: Component<ArmorSetCardProps> = ({
         "text-sm md:text-base"
       )}
     >
-      <h2 className="font-bold col-span-3">{name} set</h2>
+      <h2 className="font-bold col-span-3">{name}</h2>
       <div className="contents">
         <div className="text-center">-</div>
         <div className="text-center">★</div>
@@ -215,7 +215,7 @@ const ArmorSetNoUpgradesCard: Component<ArmorSetCardProps> = ({
         "text-sm md:text-base"
       )}
     >
-      <h2 className="font-bold col-span-2">{name} set</h2>
+      <h2 className="font-bold col-span-2">{name}</h2>
       <div className="col-span-2 text-left font-light text-sm text-gray-600">
         (no upgrades)
       </div>

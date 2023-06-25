@@ -12,6 +12,34 @@ const unusedArmors = new Set([
   "Armor_1152_Head",
 ]);
 
+const setDisplayNames: Record<string, string> = {
+  Hylia: "Hylian",
+  Korok: "Wild",
+  Gerudo: "Desert Voe",
+  Rito: "Snowquill",
+  Goron: "Flamebreaker",
+  Sheikah: "Stealth",
+  Climb: "Climbing Gear",
+  NightGlow: "Radiant",
+  HyliaArmor: "Soldier's Armor",
+  Power: "Barbarian",
+  Diving: "Glide",
+  NotSlippy: "Froggy",
+  LightEmission: "Miner's",
+  ChemicalFire: "Ember",
+  ChemicalElectric: "Charged",
+  ChemicalIce: "Frostbite",
+  MagicArmor: "Mystic",
+  Underground: "Depths",
+  RoyalGuard: "Royal Guard",
+  PhantomGanon: "Evil Spirit",
+  OcarinaOfTime: "Time",
+  WindWaker: "Wind",
+  TwilightPrincess: "Twilight",
+  SkywardSword: "Sky",
+  Kishin: "Fierce Deity",
+};
+
 async function main() {
   await fs.mkdir("./public/data", { recursive: true });
 
@@ -42,6 +70,9 @@ async function main() {
       .split("_")
       .at(-1)
       ?.toLowerCase() as Armor["slot"];
+    item.set_display = `${
+      setDisplayNames[item.belonging_set] ?? item.belonging_set
+    } set`;
     if (!unusedArmors.has(item.actorname)) {
       armors.push(item);
     }
