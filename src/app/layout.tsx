@@ -3,6 +3,8 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import cx from "classnames";
+import { SessionProvider } from "@/lib/next-auth";
+import { Header } from "@/components/header";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,12 +19,15 @@ export const metadata = {
 
 const RootLayout: ComponentWithChildren = ({ children }) => {
   return (
-    <html lang="en">
-      <body className={cx(inter.variable, "font-sans")}>
-        {children}
-        <Analytics />
-      </body>
-    </html>
+    <SessionProvider>
+      <html lang="en">
+        <body className={cx(inter.variable, "font-sans")}>
+          <Header />
+          {children}
+          <Analytics />
+        </body>
+      </html>
+    </SessionProvider>
   );
 };
 
