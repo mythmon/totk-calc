@@ -10,7 +10,7 @@ const Home: ServerComponent = async () => {
   const armorsBySet = d3.group(data.armors, (d) => d.belonging_set);
 
   return (
-    <div className="p-8">
+    <div className="p-2 md:p-8">
       <h1 className="text-xl font-bold">Armor</h1>
       <p>{data.armors.length} rows</p>
 
@@ -18,10 +18,20 @@ const Home: ServerComponent = async () => {
         {Array.from(armorsBySet.entries(), ([setName, armors]) => {
           if (!setName || armors.length === 1) {
             return armors.map((armor) => (
-              <ArmorCard key={`armor-${armor.actorname}`} armor={armor} showSet={false} />
+              <ArmorCard
+                key={`armor-${armor.actorname}`}
+                armor={armor}
+                showSet={false}
+              />
             ));
           } else {
-            return <ArmorSetCard key={`set-${setName}`} name={setName} armors={armors} />
+            return (
+              <ArmorSetCard
+                key={`set-${setName}`}
+                name={setName}
+                armors={armors}
+              />
+            );
           }
         })}
       </div>
@@ -37,7 +47,7 @@ interface ArmorCardProps {
 const ArmorCard: Component<ArmorCardProps> = ({ armor, showSet = true }) => {
   const hasUpgrades = !!armor.defense_1;
   return (
-    <div className="bg-gray-200 rounded-lg p-2 pb-3 w-64 flex flex-col">
+    <div className="bg-gray-200 rounded-lg p-2 pb-3 flex flex-col w-full sm:w-64">
       <h2 className="font-bold text-center">
         {armor.euen_name ?? armor.actorname}
       </h2>
@@ -103,20 +113,30 @@ const ArmorCard: Component<ArmorCardProps> = ({ armor, showSet = true }) => {
 };
 
 interface ArmorSetCardProps {
- name: string; armors: Armor[]
+  name: string;
+  armors: Armor[];
 }
 
-const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors}) => {
+const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors }) => {
   if (armors.length != 3) {
-    return <>{armors.map(armor => <ArmorCard key={armor.actorname} armor={armor} />)}</>;
+    return (
+      <>
+        {armors.map((armor) => (
+          <ArmorCard key={armor.actorname} armor={armor} />
+        ))}
+      </>
+    );
   }
   return (
-    <div className={cx(
-      "bg-gray-200 rounded-lg p-2 pb-3",
-      "w-[28rem]",
-      "grid grid-cols-[auto,8px,repeat(6,auto)] grid-rows-[auto,repeat(9,auto)]",
-      "gap-x-4 gap-y-2"
-    )}>
+    <div
+      className={cx(
+        "bg-gray-200 rounded-lg p-2 pb-3",
+        "w-full md:w-[28rem]",
+        "grid grid-cols-[minmax(64px,auto),8px,repeat(6,auto)] grid-rows-[auto,repeat(9,auto)]",
+        "gap-x-2 md:gap-x-4 gap-y-2",
+        "text-sm md:text-base"
+      )}
+    >
       <h2 className="font-bold col-span-3">{name} set</h2>
       <div className="contents">
         <div className="text-center">-</div>
@@ -125,12 +145,17 @@ const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors}) => {
         <div className="text-center">★</div>
         <div className="text-center">★</div>
       </div>
-      {armors.map(armor => (
+      {armors.map((armor) => (
         <>
           <hr className="col-span-9 border-b border-slate-300 w-full my-1" />
           <div className="contents">
             <div className="col-start-1 row-span-3 text-center">
-              <Image src={armor.icon} width={96} height={96} alt={armor.euen_name} />
+              <Image
+                src={armor.icon}
+                width={96}
+                height={96}
+                alt={armor.euen_name}
+              />
             </div>
             <div className="col-start-3 col-span-6 font-medium">
               {armor.euen_name}
@@ -155,8 +180,8 @@ const ArmorSetCard: Component<ArmorSetCardProps> = ({ name, armors}) => {
           </div>
         </>
       ))}
-    </div >
+    </div>
   );
-}
+};
 
 export default Home;
