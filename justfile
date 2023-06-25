@@ -5,13 +5,21 @@ default:
 dev:
   yarn next dev
 
-build: build-next build-bin
+build: build-data build-images build-next
+
+build-dev: build-data build-images
+
+build-data: build-bin
+  node build/bin/extract-data.js
+
+build-images: build-bin
+  node build/bin/extract-images.js
 
 build-next:
   yarn next build
 
 build-bin:
-  yarn tsc -p tsconfig-bin.json
+  yarn tsc -p bin/tsconfig.json
 
 lint: lint-tsc lint-eslint
 
@@ -20,9 +28,6 @@ lint-tsc:
 
 lint-eslint:
   yarn eslint .
-
-bin SCRIPT: build-bin
-  node build/bin/{{SCRIPT}}.js
 
 # Run another Just recipe every time any files change
 watch +RECIPE:

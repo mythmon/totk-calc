@@ -36,4 +36,5 @@ next-env.d.ts
 
 # data
 cache
-public/images/armor
+public/images/armor/*.avif
+public/data/armors.json

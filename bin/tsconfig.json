@@ -5,11 +5,12 @@
     "@tsconfig/node20"
   ],
   "compilerOptions": {
+    "lib": ["ES2021.String"],
     "paths": {
       "@/*": ["./src/*"]
     },
-    "outDir": "./build"
+    "outDir": "../build"
   },
-  "include": ["bin"],
+  "include": ["*.ts"],
   "exclude": ["node_modules"]
 }
