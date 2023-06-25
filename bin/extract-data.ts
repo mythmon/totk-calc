@@ -1,7 +1,8 @@
 import fs from "node:fs/promises";
-import { Armor, loadWorkbook } from "../src/data/totkDb";
+import { Armor } from "../src/data/totkDb";
 import type { CellValue } from "exceljs";
 import path from "node:path";
+import { loadWorkbook } from "./shared/totkDb";
 
 const output = path.join(process.cwd(), "public", "data", "armors.json");
 

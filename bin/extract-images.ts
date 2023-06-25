@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import sharp from "sharp";
 import { Queue } from "async-await-queue";
-import { loadWorkbook } from "../src/data/totkDb";
+import { loadWorkbook } from "./shared/totkDb";
 
 async function main() {
   await fs.mkdir("./public/images/armor", { recursive: true });
