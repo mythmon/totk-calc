@@ -2407,6 +2407,11 @@ astring@^1.6.0:
   resolved "https://registry.yarnpkg.com/astring/-/astring-1.8.6.tgz#2c9c157cf1739d67561c56ba896e6948f6b93731"
   integrity sha512-ISvCdHdlTDlH5IpxQJIex7BWBywFWgjJSVdwst+/iQCoEYnyOaQ95+X1JGshuBjGp6nxKUy1jMgE3zPqN7fQdg==
 
+async-await-queue@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/async-await-queue/-/async-await-queue-2.1.4.tgz#0c44a405cd31369b561f6ac663b74b4b4ffb99ad"
+  integrity sha512-3DpDtxkKO0O/FPlWbk/CrbexjuSxWm1CH1bXlVNVyMBIkKHhT5D85gzHmGJokG3ibNGWQ7pHBmStxUW/z/0LYQ==
+
 async-listen@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/async-listen/-/async-listen-2.0.3.tgz#be1be5a1b15e6007123e67275450fc4e84955e61"

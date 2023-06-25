@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import sharp from "sharp";
+import { Queue } from "async-await-queue";
 import { loadWorkbook } from "../src/data/totkDb";
 
 async function main() {
@@ -24,11 +25,19 @@ async function main() {
     images.push({ actorName, arrayBuffer });
   });
 
-  for (const image of images) {
-    console.log(image.actorName);
-    const dest = `./public/images/armor/${image.actorName}.avif`;
-    await sharp(image.arrayBuffer).avif({ quality: 80 }).toFile(dest);
+  const queue = new Queue<void>(4);
+  const promises: Promise<void>[] = [];
+  for (const [idx, image] of images.entries()) {
+    promises.push(
+      queue.run(async () => {
+        const dest = `./public/images/armor/${image.actorName}.avif`;
+        console.log(`(${idx + 1}/${images.length}) ${dest}`);
+        await sharp(image.arrayBuffer).avif({ quality: 80 }).toFile(dest);
+      })
+    );
   }
+  await queue.flush();
+  await Promise.all(promises);
 }
 
 main().catch((e) => console.error(e));

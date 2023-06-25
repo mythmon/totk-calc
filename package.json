@@ -10,6 +10,7 @@
     "@types/react-dom": "18.2.6",
     "@vercel/analytics": "^1.0.1",
     "@vercel/kv": "^0.2.1",
+    "async-await-queue": "^2.1.4",
     "autoprefixer": "10.4.14",
     "classnames": "^2.3.2",
     "client-only": "^0.0.1",
