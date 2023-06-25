@@ -12,10 +12,13 @@ const Home: ServerComponent = async () => {
   return (
     <div className="p-2 md:p-8">
       <h1 className="text-xl font-bold">Armor</h1>
-      <p>{data.armors.length} rows</p>
+      <p>{data.armors.length} armor pieces</p>
 
       <div className="flex flex-wrap gap-4">
         {Array.from(armorsBySet.entries(), ([setName, armors]) => {
+          armors = d3.sort(armors, (d) =>
+            ["head", "upper", "lower"].indexOf(d.slot)
+          );
           if (!setName || armors.length === 1) {
             return armors.map((armor) => (
               <ArmorCard

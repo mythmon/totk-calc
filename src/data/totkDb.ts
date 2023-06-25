@@ -6,6 +6,7 @@ export interface Armor {
   euen_name: string;
   belonging_set: string;
   icon: string;
+  slot: "head" | "upper" | "lower";
   buying_price: number;
   defense_0: number;
   defense_1: number;

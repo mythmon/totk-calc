@@ -38,6 +38,10 @@ async function main() {
       })
     ) as unknown as Armor;
     item.icon = `/images/armor/${item.actorname}.avif`;
+    item.slot = item.actorname
+      .split("_")
+      .at(-1)
+      ?.toLowerCase() as Armor["slot"];
     if (!unusedArmors.has(item.actorname)) {
       armors.push(item);
     }
