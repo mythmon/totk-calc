@@ -2,7 +2,7 @@
   "extends": [
     "@tsconfig/recommended",
     "@tsconfig/strictest",
-    "@tsconfig/node20"
+    "@tsconfig/node18"
   ],
   "compilerOptions": {
     "lib": ["ES2021.String"],
