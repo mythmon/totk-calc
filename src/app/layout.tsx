@@ -8,7 +8,6 @@ import { Header } from "@/components/header";
 
 const inter = Inter({
   subsets: ["latin"],
-  display: "swap",
   variable: "--font-inter",
 });
 
