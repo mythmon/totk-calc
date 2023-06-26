@@ -6,7 +6,7 @@ import { ArmorIcon, RupeeIcon } from "@/components/icons";
 import d3 from "@/lib/d3";
 import cx from "classnames";
 import { type Armor, type ArmorListResponse } from "@/lib/totkDb";
-import type { InventoryArmorRes } from "../api/inventory/armor/route";
+import type { InventoryArmorRes } from '../api/inventory/armor/types';
 import { ArmorLevelManager } from "@/components/armorLevelManager";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";

@@ -17,7 +17,7 @@ export const ArmorLevelManager: Component<ArmorLevelManagerProps> = ({ haveLevel
   }, [setLevel]);
 
   return <select value={haveLevel ?? "null"} className="ml-3" onChange={handleChange}>
-    <option value="null">Don't have</option>
+    <option value="null">Don&apos;t have</option>
     {hasUpgrades
       ? <>
         <option value={0}>Not upgraded</option>

@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { Armor } from "../src/data/totkDb";
+import { Armor } from "../src/lib/totkDb";
 import type { CellValue } from "exceljs";
 import path from "node:path";
 import { loadWorkbook } from "./shared/totkDb";

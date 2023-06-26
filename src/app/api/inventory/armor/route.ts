@@ -2,13 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import {getServerSession } from 'next-auth';
 import { config } from '@/lib/config';
 import { UserInventory } from '@/lib/userInventory';
-import { z } from "zod";
-
-export const InventoryArmorRes = z.object({
-  armor: z.record(z.nullable(z.number()))
-});
-
-export type InventoryArmorRes = z.infer<typeof InventoryArmorRes>;
+import { InventoryArmorRes } from "./types";
 
 export async function GET(): Promise<NextResponse<InventoryArmorRes>> {
   const session = await getServerSession(config.auth);

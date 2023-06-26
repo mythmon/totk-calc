@@ -1,6 +1,8 @@
 {
+  "plugins": ["@tanstack/eslint-plugin-query"],
   "extends": [
     "next/core-web-vitals",
-    "plugin:@tanstack/eslint-plugin-query/recommnended"
-  ]
+    "plugin:@tanstack/eslint-plugin-query/recommended"
+  ],
+  "ignorePatterns": ["./.next/**/*"]
 }
