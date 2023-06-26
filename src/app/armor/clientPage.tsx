@@ -6,44 +6,27 @@ import { ArmorIcon, RupeeIcon } from "@/components/icons";
 import d3 from "@/lib/d3";
 import cx from "classnames";
 import { type Armor, type ArmorListResponse } from "@/lib/totkDb";
-import type { InventoryArmorRes } from '../api/inventory/armor/types';
+import { InventoryArmorRes } from "../api/inventory/armor/types";
 import { ArmorLevelManager } from "@/components/armorLevelManager";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useGetPatchQuery } from "@/lib/react-query";
 
 interface ArmorListClientProps {
   armorList: ArmorListResponse;
 }
 
-export const ArmorListClient: Component<ArmorListClientProps> = ({ armorList }) => {
+export const ArmorListClient: Component<ArmorListClientProps> = ({
+  armorList,
+}) => {
   const armorsBySet = d3.group(armorList.armors, (d) => d.set_display);
   const session = useSession();
+  const anonymous = session.status === "unauthenticated";
 
-  const queryClient = useQueryClient();
-  const queryKey = ["inventory", "armor"];
-  const armorInventoryQuery = useQuery<InventoryArmorRes>({ queryKey, enabled: !!session, queryFn: () => fetch("/api/inventory/armor").then(res => res.json()) });
-  const armorInventoryMutation = useMutation({
-    mutationFn: async (patch: InventoryArmorRes["armor"]) => {
-      const res = await fetch("/api/inventory/armor", { method: "PATCH", body: JSON.stringify({ armor: patch }) });
-      const newData = await res.json();
-      return newData;
-    },
-    onMutate: async (patch: InventoryArmorRes["armor"]) => {
-      await queryClient.cancelQueries({ queryKey });
-      const previousArmor = queryClient.getQueriesData(queryKey);
-      queryClient.setQueryData(queryKey, (old: InventoryArmorRes | undefined) => ({
-        armor: { ...old?.armor, ...patch }
-      }));
-      return { previousArmor };
-    },
-    onError: (_error, _patch, context) => {
-      console.error("resetting back to", { context });
-      const d = context?.previousArmor[0];
-      if (d) queryClient.setQueryData(d[0], d[1])
-    }
+  const armorInventoryQuery = useGetPatchQuery<InventoryArmorRes>({
+    endpoint: "/api/inventory/armor",
+    enabled: !anonymous,
   });
 
-  const anonymous = session.status === "unauthenticated";
   const loaded = anonymous || armorInventoryQuery.isFetched;
 
   return (
@@ -73,7 +56,9 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({ armorList }) 
                   armors={armors}
                   anonymous={anonymous}
                   inventory={armorInventoryQuery.data?.armor ?? null}
-                  mutateHaveLevel={async (patch) => { await armorInventoryMutation.mutate(patch); }}
+                  mutateHaveLevel={async (patch) => {
+                    await armorInventoryQuery.mutate({ armor: patch });
+                  }}
                 />
               );
             }
