@@ -14,22 +14,16 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
-    "module": "esnext",
-    "strictNullChecks": true
+    "strictNullChecks": true,
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/data/totkDb.ts"
+    "src/lib/totkDb.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "bin"
-  ]
+  "exclude": ["node_modules", "bin"]
 }
