@@ -1,18 +1,20 @@
 import fs from "node:fs/promises";
-import { Armor } from "../src/lib/totkDb";
-import type { CellValue } from "exceljs";
+import { Armor, UpgradeIngredient } from "../src/lib/totkDb";
+import type { Row } from "exceljs";
 import path from "node:path";
 import { loadWorkbook } from "./shared/totkDb";
 
-const output = path.join(process.cwd(), "public", "data", "armors.json");
+const OUTPUT = path.join(process.cwd(), "public", "data", "armors.json");
 
-const unusedArmors = new Set([
+const UNUSED_ARMORS = new Set([
   "Armor_1036_Lower",
   "Armor_1036_Upper",
   "Armor_1152_Head",
 ]);
 
-const setDisplayNames: Record<string, string> = {
+const STAR = "★";
+
+const SET_DISPLAY_NAMES: Record<string, string> = {
   Hylia: "Hylian",
   Korok: "Wild",
   Gerudo: "Desert Voe",
@@ -41,66 +43,166 @@ const setDisplayNames: Record<string, string> = {
 };
 
 async function main() {
+  console.log("loading spreadsheet");
   await fs.mkdir("./public/data", { recursive: true });
 
   const workbook = await loadWorkbook();
   const armorSheet = workbook.getWorksheet("Armors");
+  const headers = armorSheet.getRow(1);
 
-  const headers: { original: string; slug: keyof Armor }[] = (
-    armorSheet.getRow(1).values as Array<string>
-  )?.map((s) => ({
-    original: s,
-    slug: fieldName(s),
-  }));
-
-  const armors: Armor[] = [];
+  console.log("reading armors");
+  const armors: ArmorData[] = [];
   armorSheet.eachRow((row, rowNumber) => {
     if (!row.hasValues) return;
     if (rowNumber === 1) return;
-    const values = row.values as Array<CellValue>;
-    const item = Object.fromEntries(
-      values.flatMap((d, i) => {
-        const key = headers[i]?.slug;
-        if (!d || !key) return [];
-        return [[key, d]];
-      })
-    ) as unknown as Armor;
-    item.icon = `/images/armor/${item.actorname}.avif`;
-    item.slot = item.actorname
-      .split("_")
-      .at(-1)
-      ?.toLowerCase() as Armor["slot"];
-    if (!(item.belonging_set?.trim().length)) item.belonging_set = null;
-    item.set_display = item.belonging_set
-      ? `${setDisplayNames[item.belonging_set] ?? item.belonging_set} set`
-      : null;
-    if (!unusedArmors.has(item.actorname)) {
+    const item = new ArmorData(row, headers);
+    if (!UNUSED_ARMORS.has(item.actorName)) {
       armors.push(item);
     }
   });
 
-  const fields = Object.fromEntries(
-    Object.values(headers).map((d) => [d.slug, { title: d.original }])
-  ) as Record<keyof Armor, { title: string }>;
+  console.log("writing data");
+  await fs.writeFile(OUTPUT, JSON.stringify(armors, null, 2));
 
-  await fs.writeFile(output, JSON.stringify({ armors, fields }));
+  console.log("done", OUTPUT);
 }
 
-function fieldName(s: string): keyof Armor {
-  let slug = sluggify(s);
-  if (slug === "base_defense") return "defense_0";
-  if (slug === "base_selling_price") return "selling_price_0";
-  return slug as keyof Armor;
-}
+class ArmorData implements Armor {
+  constructor(private dataRow: Row, private headerRow: Row) {}
 
-function sluggify(s: string): string {
-  return s
-    .toLowerCase()
-    .replaceAll(/([A-Z])([a-z])/g, "$1_$2")
-    .replaceAll(/★+/g, (d) => d.length.toString())
-    .replaceAll(/[^a-z0-9]+/g, "_")
-    .replace(/^_+/, "")
-    .replace(/_$/, "");
+  private _getField(name: string): string | null {
+    let targetColNum: number | null = null;
+    this.headerRow.eachCell((cell, colNum) => {
+      if (targetColNum) return;
+      if (
+        cell.value &&
+        typeof cell.value === "string" &&
+        cell.value.trim() === name
+      ) {
+        targetColNum = colNum;
+      }
+    });
+    if (!targetColNum)
+      throw new Error(
+        `No column with header <<${name}>>\nValid headers: ${this.headerRow.values}`
+      );
+    let value = this.dataRow.getCell(targetColNum).value;
+    if (value === null || value === undefined) return null;
+    if (typeof value === "string" && value.trim().length === 0) return null;
+    return value.toString();
+  }
+
+  private _requireField(name: string): string {
+    let value = this._getField(name);
+    if (!value)
+      throw new Error(`Cell for column ${name} was blank in ${this.actorName}`);
+    return value;
+  }
+
+  toJSON(): Armor {
+    const keys: (keyof Armor)[] = [
+      "actorName",
+      "enName",
+      "belongingSet",
+      "setEnName",
+      "hasUpgrades",
+      "icon",
+      "slot",
+      "buyingPrice",
+      "defenses",
+      "sellingPrices",
+      "upgrades",
+    ];
+    return Object.fromEntries(
+      keys.map((key) => [key, this[key]])
+    ) as unknown as Armor;
+  }
+
+  get actorName(): string {
+    return this._requireField("ActorName");
+  }
+
+  get belongingSet(): string | null {
+    return this._getField("Belonging Set");
+  }
+
+  get buyingPrice(): number {
+    return +this._requireField("Buying Price");
+  }
+
+  get defenses(): number[] {
+    const defenses = [+(this._getField("Base Defense") ?? 0)];
+    for (let stars = STAR; stars.length <= 4; stars += STAR) {
+      const d = this._getField(`Defense ${stars}`);
+      if (d !== null) defenses.push(+d);
+    }
+    return defenses;
+  }
+
+  get enName(): string {
+    return this._requireField("EUen name");
+  }
+
+  get hasUpgrades(): boolean {
+    return this.upgrades !== null && this.upgrades.length > 0;
+  }
+
+  get icon(): string {
+    return `/images/armor/${this.actorName}.avif`;
+  }
+
+  get sellingPrices(): number[] {
+    const sellingPrices = [+this._requireField("Base Selling Price")];
+    for (let stars = STAR; stars.length <= 4; stars += STAR) {
+      const d = this._getField(`Selling Price ${stars}`);
+      if (d !== null) sellingPrices.push(+d);
+    }
+    return sellingPrices;
+  }
+
+  get setEnName(): string | null {
+    const setCode = this.belongingSet;
+    if (!setCode) return null;
+    return `${SET_DISPLAY_NAMES[setCode] ?? setCode} set`;
+  }
+
+  get slot(): Armor["slot"] {
+    const slot = this.actorName.split("_").at(-1)?.toLowerCase();
+    switch (slot) {
+      case "head":
+      case "upper":
+      case "lower":
+        return slot;
+      default:
+        throw new Error(`unexpected slot ${slot} from ${this.actorName}`);
+    }
+  }
+
+  get upgrades(): null | UpgradeIngredient[][] {
+    const upgrades = [];
+
+    for (let stars = STAR; stars.length <= 4; stars += STAR) {
+      const upgradeText = this._getField(`Upgrade ${stars}`);
+      if (!upgradeText) break;
+      const upgradeRows = upgradeText
+        .split("\n")
+        .map((l) => l.match(/(\d+)\s+(.*)/))
+        .filter<RegExpExecArray>((d): d is RegExpExecArray => !!d)
+        .map(
+          (match) =>
+            ({
+              quantity: +match[1]!,
+              actorName: match[2]!,
+            } satisfies UpgradeIngredient)
+        );
+      if (!upgradeRows.length)
+        throw new Error(`failed to parse upgrades: ${upgradeText}`);
+      upgrades.push(upgradeRows);
+    }
+
+    if (!upgrades.length) return null;
+    return upgrades;
+  }
 }
 
 main().catch((e) => console.error(e));

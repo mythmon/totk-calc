@@ -68,9 +68,6 @@ export function useGetPatchQuery<T>({
       const d = ctx?.previousData;
       if (d) queryClient.setQueryData(d[0], d[1]);
     },
-
-    // onError(_error, _patch, context: { previousData: [QueryKey, T] }) {
-    // }
   });
 
   return {

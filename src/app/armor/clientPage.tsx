@@ -18,7 +18,7 @@ interface ArmorListClientProps {
 export const ArmorListClient: Component<ArmorListClientProps> = ({
   armorList,
 }) => {
-  const armorsBySet = d3.group(armorList.armors, (d) => d.set_display);
+  const armorsBySet = d3.group(armorList.armors, (d) => d.setEnName);
   const session = useSession();
   const anonymous = session.status === "unauthenticated";
 
@@ -43,7 +43,7 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
             if (!setName || armors.length === 1) {
               return armors.map((armor) => (
                 <ArmorCard
-                  key={`armor-${armor.actorname}`}
+                  key={`armor-${armor.actorName}`}
                   armor={armor}
                   showSet={false}
                 />
@@ -75,21 +75,21 @@ interface ArmorCardProps {
 }
 
 const ArmorCard: Component<ArmorCardProps> = ({ armor, showSet = true }) => {
-  const hasUpgrades = !!armor.defense_1;
+  const hasUpgrades = !!armor.hasUpgrades;
   return (
     <div className="bg-gray-200 rounded-lg p-2 pb-3 flex flex-col w-full sm:w-64">
       <h2 className="font-bold text-center">
-        {armor.euen_name ?? armor.actorname}
+        {armor.enName ?? armor.actorName}
       </h2>
-      {armor.set_display && showSet && (
-        <h3 className="text-center italic">{armor.set_display}</h3>
+      {armor.setEnName && showSet && (
+        <h3 className="text-center italic">{armor.setEnName}</h3>
       )}
       <div className="flex-grow min-h-[1rem]" />
       <Image
         className="m-auto"
         width={128}
         height={128}
-        alt={armor.euen_name}
+        alt={armor.enName}
         src={armor.icon}
       />
       <div className="flex-grow min-h-[1rem]" />
@@ -105,20 +105,16 @@ const ArmorCard: Component<ArmorCardProps> = ({ armor, showSet = true }) => {
           <hr className="col-span-6 border-b border-slate-300 w-8/12 my-1" />
           <div className="contents">
             <ArmorIcon width="24" height="24" />
-            <div>{armor.defense_0}</div>
-            <div>{armor.defense_1}</div>
-            <div>{armor.defense_2}</div>
-            <div>{armor.defense_3}</div>
-            <div>{armor.defense_4}</div>
+            {armor.defenses.map((def) => (
+              <div>{def}</div>
+            ))}
           </div>
           <hr className="col-span-6 border-b border-slate-300 w-8/12 my-1" />
           <div className="contents">
             <RupeeIcon width="24" height="24" />
-            <div>{armor.selling_price_0}</div>
-            <div>{armor.selling_price_1}</div>
-            <div>{armor.selling_price_2}</div>
-            <div>{armor.selling_price_3}</div>
-            <div>{armor.selling_price_4}</div>
+            {armor.sellingPrices.map((pri) => (
+              <div>{pri}</div>
+            ))}
           </div>
         </div>
       ) : (
@@ -126,11 +122,11 @@ const ArmorCard: Component<ArmorCardProps> = ({ armor, showSet = true }) => {
           <div className="flex w-full gap-2">
             <div className="flex-grow text-center">
               <ArmorIcon className="inline" width="24" height="24" /> ️
-              {armor.defense_0}
+              {armor.defenses[0]}
             </div>
             <div className="flex-grow text-center">
               <RupeeIcon className="inline" width="24" height="24" />{" "}
-              {armor.selling_price_0}
+              {armor.sellingPrices[0]}
             </div>
           </div>
           <div className="text-center font-light text-sm text-gray-600">
@@ -155,15 +151,15 @@ const ArmorSetCard: Component<ArmorSetCardProps> = (props) => {
     return (
       <>
         {props.armors.map((armor) => (
-          <ArmorCard key={armor.actorname} armor={armor} />
+          <ArmorCard key={armor.actorName} armor={armor} />
         ))}
       </>
     );
   }
 
-  const hasUpgrades = !!props.armors[0]?.defense_1;
+  const hasUpgrades = !!props.armors.every((a) => a.hasUpgrades);
   if (hasUpgrades) {
-    return <ArmorSetUpgradesCard {...props}  />;
+    return <ArmorSetUpgradesCard {...props} />;
   } else {
     return <ArmorSetNoUpgradesCard {...props} />;
   }
@@ -174,7 +170,7 @@ const ArmorSetUpgradesCard: Component<ArmorSetCardProps> = ({
   armors,
   anonymous,
   inventory,
-  mutateHaveLevel
+  mutateHaveLevel,
 }) => {
   return (
     <div
@@ -204,33 +200,32 @@ const ArmorSetUpgradesCard: Component<ArmorSetCardProps> = ({
                 src={armor.icon}
                 width={96}
                 height={96}
-                alt={armor.euen_name}
+                alt={armor.enName}
               />
             </div>
             <div className="col-start-3 col-span-6 font-medium">
-              {armor.euen_name}
+              {armor.enName}
               {!anonymous && (
                 <ArmorLevelManager
-                  haveLevel={inventory?.[armor.actorname] ?? null}
+                  haveLevel={inventory?.[armor.actorName] ?? null}
                   hasUpgrades={true}
-                  setLevel={async (newLevel) => mutateHaveLevel({ [armor.actorname]: newLevel })}
-                />)}
+                  setLevel={async (newLevel) =>
+                    mutateHaveLevel({ [armor.actorName]: newLevel })
+                  }
+                />
+              )}
             </div>
             <div className="contents">
               <ArmorIcon className="col-start-3" width="24" height="24" />
-              <div className="text-center">{armor.defense_0}</div>
-              <div className="text-center">{armor.defense_1}</div>
-              <div className="text-center">{armor.defense_2}</div>
-              <div className="text-center">{armor.defense_3}</div>
-              <div className="text-center">{armor.defense_4}</div>
+              {armor.defenses.map((def) => (
+                <div className="text-center">{def}</div>
+              ))}
             </div>
             <div className="contents">
               <RupeeIcon className="col-start-3" width="24" height="24" />
-              <div className="text-center">{armor.selling_price_0}</div>
-              <div className="text-center">{armor.selling_price_1}</div>
-              <div className="text-center">{armor.selling_price_2}</div>
-              <div className="text-center">{armor.selling_price_3}</div>
-              <div className="text-center">{armor.selling_price_4}</div>
+              {armor.sellingPrices.map((pri) => (
+                <div className="text-center">{pri}</div>
+              ))}
             </div>
           </div>
         </>
@@ -267,19 +262,19 @@ const ArmorSetNoUpgradesCard: Component<ArmorSetCardProps> = ({
                 src={armor.icon}
                 width={96}
                 height={96}
-                alt={armor.euen_name}
+                alt={armor.enName}
               />
             </div>
             <div className="col-start-3 col-span-2 font-medium">
-              {armor.euen_name}
+              {armor.enName}
             </div>
             <div className="contents">
               <ArmorIcon className="col-start-3" width="24" height="24" />
-              <div className="text-left">{armor.defense_0}</div>
+              <div className="text-left">{armor.defenses[0]}</div>
             </div>
             <div className="contents">
               <RupeeIcon className="col-start-3" width="24" height="24" />
-              <div className="text-left">{armor.selling_price_0}</div>
+              <div className="text-left">{armor.sellingPrices[0]}</div>
             </div>
           </div>
         </>
