@@ -105,15 +105,15 @@ const ArmorCard: Component<ArmorCardProps> = ({ armor, showSet = true }) => {
           <hr className="col-span-6 border-b border-slate-300 w-8/12 my-1" />
           <div className="contents">
             <ArmorIcon width="24" height="24" />
-            {armor.defenses.map((def) => (
-              <div>{def}</div>
+            {armor.defenses.map((def, i) => (
+              <div key={`def-${i}`}>{def}</div>
             ))}
           </div>
           <hr className="col-span-6 border-b border-slate-300 w-8/12 my-1" />
           <div className="contents">
             <RupeeIcon width="24" height="24" />
-            {armor.sellingPrices.map((pri) => (
-              <div>{pri}</div>
+            {armor.sellingPrices.map((pri, i) => (
+              <div key={`sell-rupee-${i}`}>{pri}</div>
             ))}
           </div>
         </div>
@@ -217,14 +217,18 @@ const ArmorSetUpgradesCard: Component<ArmorSetCardProps> = ({
             </div>
             <div className="contents">
               <ArmorIcon className="col-start-3" width="24" height="24" />
-              {armor.defenses.map((def) => (
-                <div className="text-center">{def}</div>
+              {armor.defenses.map((def, i) => (
+                <div key={`def-${i}`} className="text-center">
+                  {def}
+                </div>
               ))}
             </div>
             <div className="contents">
               <RupeeIcon className="col-start-3" width="24" height="24" />
-              {armor.sellingPrices.map((pri) => (
-                <div className="text-center">{pri}</div>
+              {armor.sellingPrices.map((pri, i) => (
+                <div key={`sell-rupee-${i}`} className="text-center">
+                  {pri}
+                </div>
               ))}
             </div>
           </div>

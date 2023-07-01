@@ -22,7 +22,4 @@ export const config = {
     ],
   },
   env: env("ENV", "dev"),
-  google: {
-    sheetId: env("GOOGLE_TOTK_DB_SHEET_ID"),
-  },
 };

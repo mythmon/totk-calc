@@ -4,19 +4,20 @@ import path from "node:path";
 export interface Armor {
   actorName: string;
   belongingSet: string | null;
-  buyingPrice: number;
+  buyPriceRupees: number | null;
+  buyPricePoes: number | null;
   defenses: number[];
   enName: string;
   hasUpgrades: boolean;
   icon: string;
   sellingPrices: number[];
   setEnName: string | null;
-  slot: "head" | "upper" | "lower";
+  slot: "head" | "upper" | "lower" | "all";
   upgrades: null | UpgradeIngredient[][];
 }
 
 export interface UpgradeIngredient {
-  actorName: string;
+  material: string;
   quantity: number;
 }
 

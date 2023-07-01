@@ -1,43 +1,43 @@
 import fs from "node:fs/promises";
 import sharp from "sharp";
 import { Queue } from "async-await-queue";
-import { loadWorkbook } from "./shared/totkDb";
+import { ArmorData, loadArmorData } from "./shared/totkDb";
 
 async function main() {
   await fs.mkdir("./public/images/armor", { recursive: true });
+  console.log("loading data");
+  const armors = await loadArmorData();
 
-  const workbook = await loadWorkbook();
-  const armorSheet = workbook.getWorksheet("Armors");
-  const imageInfoByTl = Object.fromEntries(
-    armorSheet.getImages().map((d) => [d.range.tl.nativeRow, d])
-  );
-
-  const images: { actorName: string; arrayBuffer: ArrayBuffer }[] = [];
-  armorSheet.eachRow((row, rowNumber) => {
-    if (!row.hasValues) return;
-    if (rowNumber === 1) return;
-    const actorName = row.getCell(2).value;
-    if (!actorName || typeof actorName !== "string") return;
-    const imageInfo = imageInfoByTl[rowNumber - 1];
-    if (!imageInfo) return;
-    const arrayBuffer = workbook.getImage(+imageInfo.imageId).buffer;
-    if (!arrayBuffer) return;
-    images.push({ actorName, arrayBuffer });
+  console.log("processing data");
+  const armorsForImages: ArmorData[] = armors.flatMap((armor) => {
+    if (armor.hasIcon()) {
+      return [armor];
+    } else {
+      console.log(`no icon for ${armor.actorName}`);
+      return [];
+    }
   });
 
-  const queue = new Queue<void>(4);
-  const promises: Promise<void>[] = [];
-  for (const [idx, image] of images.entries()) {
-    promises.push(
-      queue.run(async () => {
-        const dest = `./public/images/armor/${image.actorName}.avif`;
-        console.log(`(${idx + 1}/${images.length}) ${dest}`);
-        await sharp(image.arrayBuffer).avif({ quality: 80 }).toFile(dest);
-      })
-    );
+  if (armorsForImages.length) {
+    console.log("writing data");
+    const queue = new Queue<void>(4);
+    const promises: Promise<void>[] = [];
+    for (const [idx, armor] of armorsForImages.entries()) {
+      promises.push(
+        queue.run(async () => {
+          const dest = `./public/images/armor/${armor.actorName}.avif`;
+          console.log(`(${idx + 1}/${armorsForImages.length}) ${dest}`);
+          const image = await armor.getIconBuffer();
+          if (image) await sharp(image).avif({ quality: 80 }).toFile(dest);
+        })
+      );
+    }
+    await queue.flush();
+    await Promise.all(promises);
+  } else {
+    console.warn("Warning: no images found");
   }
-  await queue.flush();
-  await Promise.all(promises);
+  console.log("done");
 }
 
 main().catch((e) => console.error(e));
