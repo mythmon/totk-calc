@@ -8,6 +8,7 @@ export const Header: Component = () => {
     <header className="flex p-3 bg-gray-800 text-white gap-6">
       <div className="bold">TOTK Calc</div>
       <NavLink target="/armor">Armor</NavLink>
+      <NavLink target="/dye">Dye</NavLink>
       <div className="grow" />
       <AuthInfo className="justify-self-end" />
     </header>
