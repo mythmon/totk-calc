@@ -75,17 +75,104 @@ export async function loadWorkbook(): Promise<Workbook> {
 
 export async function loadArmorData(): Promise<ArmorData[]> {
   const workbook = await loadWorkbook();
-  const armorSheet = workbook.getWorksheet("Armor");
-  const headers = armorSheet.getRow(1);
+  const armorSheet = new SheetHelper(workbook.getWorksheet("Armor"));
+  const armorIconSheet = new SheetHelper(workbook.getWorksheet("Armor Icons"));
 
-  const armors: ArmorData[] = [];
-  armorSheet.eachRow((row, rowNumber) => {
-    if (!row.hasValues) return;
-    if (rowNumber === 1) return;
-    armors.push(new ArmorData(row, headers));
-  });
+  const armors: ArmorData[] = armorSheet
+    .getRows()
+    .map(
+      (row) =>
+        new ArmorData(
+          row,
+          armorIconSheet.lookup(
+            "ActorName (Base)",
+            row.getField("ActorName (Base)")
+          )
+        )
+    );
 
   return armors;
+}
+
+class SheetHelper {
+  private _headerRow: excelJs.Row;
+  private _columnMap: Record<string, number>;
+
+  constructor(private _sheet: excelJs.Worksheet) {
+    this._headerRow = this._sheet.getRow(1);
+
+    this._columnMap = {};
+    this._headerRow.eachCell((cell, colNum) => {
+      const res = z.string().safeParse(cell.value);
+      if (res.success) {
+        this._columnMap[res.data] = colNum;
+      }
+    });
+  }
+
+  get fieldNames(): string[] {
+    return Object.keys(this._columnMap);
+  }
+
+  getCell<T>(
+    rowNumber: number,
+    name: string,
+    validator?: ZodSchema<T, ZodTypeDef, unknown>
+  ): T {
+    const columnNum = this._columnMap[name];
+    if (!columnNum) {
+      console.log(this._columnMap);
+      throw new Error(`no field named ${name} found`);
+    }
+    const cell = this._sheet.getCell(rowNumber, columnNum).value;
+    if (validator) {
+      try {
+        return validator.parse(cell);
+      } catch (err) {
+        console.log(`Error getting field ${name} for row ${rowNumber}`);
+        console.log(cell);
+        throw err;
+      }
+    } else {
+      return cell as unknown as T;
+    }
+  }
+
+  getRows(): SheetRowHelper[] {
+    const rv: SheetRowHelper[] = [];
+    this._sheet.eachRow((row, rowNumber) => {
+      if (!row.hasValues) return;
+      if (rowNumber === 1) return;
+      rv.push(new SheetRowHelper(this, rowNumber));
+    });
+    return rv;
+  }
+
+  lookup(
+    lookupColumn: string,
+    lookupValue: excelJs.Cell["value"]
+  ): SheetRowHelper {
+    for (let rowNum = 2; rowNum <= this._sheet.rowCount; rowNum++) {
+      if (this.getCell(rowNum, lookupColumn) === lookupValue) {
+        return new SheetRowHelper(this, rowNum);
+      }
+    }
+    throw new Error(
+      `no row found with ${lookupColumn} = ${JSON.stringify(lookupValue)}`
+    );
+  }
+}
+
+class SheetRowHelper {
+  constructor(private _sheetHelper: SheetHelper, private _rowNumber: number) {}
+
+  getField<T>(name: string, validator?: ZodSchema<T, ZodTypeDef, unknown>): T {
+    return this._sheetHelper.getCell(this._rowNumber, name, validator);
+  }
+
+  get fieldNames(): string[] {
+    return this._sheetHelper.fieldNames;
+  }
 }
 
 function zHyphenNull<Out, Inp = unknown>(
@@ -97,43 +184,10 @@ function zHyphenNull<Out, Inp = unknown>(
 const zHyphenNumber = zHyphenNull(z.coerce.number());
 
 export class ArmorData implements Armor {
-  constructor(private dataRow: excelJs.Row, private headerRow: excelJs.Row) {}
-
-  private _getField<T>(
-    name: string,
-    validator?: ZodSchema<T, ZodTypeDef, unknown>
-  ): T {
-    let targetColNum: number | null = null;
-    this.headerRow.eachCell((cell, colNum) => {
-      if (targetColNum) return;
-      if (
-        cell.value &&
-        typeof cell.value === "string" &&
-        cell.value.trim() === name
-      ) {
-        targetColNum = colNum;
-      }
-    });
-    if (!targetColNum)
-      throw new Error(
-        `No column with header <<${name}>>\nValid headers: ${this.headerRow.values}`
-      );
-    const cell = this.dataRow.getCell(targetColNum).value;
-    if (validator) {
-      try {
-        return validator.parse(cell);
-      } catch (err) {
-        console.log(
-          `Error getting field ${name} for armor ${this._getField(
-            "ActorName (Base)"
-          )}`
-        );
-        throw err;
-      }
-    } else {
-      return cell as unknown as T;
-    }
-  }
+  constructor(
+    private dataRow: SheetRowHelper,
+    private iconRow: SheetRowHelper
+  ) {}
 
   toJSON(): Armor {
     const keys: (keyof Armor)[] = [
@@ -142,7 +196,8 @@ export class ArmorData implements Armor {
       "belongingSet",
       "setEnName",
       "hasUpgrades",
-      "icon",
+      "colors",
+      "iconUrls",
       "slot",
       "buyPriceRupees",
       "buyPricePoes",
@@ -156,25 +211,45 @@ export class ArmorData implements Armor {
   }
 
   get actorName(): string {
-    return this._getField("ActorName (Base)", z.string());
+    return this.dataRow.getField("ActorName (Base)", z.string());
   }
 
   get belongingSet(): string | null {
-    return this._getField("Set (Internal)", z.nullable(z.string()));
+    return this.dataRow.getField("Set (Internal)", z.nullable(z.string()));
   }
 
   get buyPriceRupees(): number | null {
-    return this._getField("Buy Price (Rupees)", zHyphenNumber);
+    return this.dataRow.getField("Buy Price (Rupees)", zHyphenNumber);
   }
 
   get buyPricePoes(): number | null {
-    return this._getField("Buy Price (Poes)", zHyphenNumber);
+    return this.dataRow.getField("Buy Price (Poes)", zHyphenNumber);
+  }
+
+  get colors() {
+    return [
+      "Base",
+      ...this.iconRow.fieldNames
+        .filter((name) => name.startsWith("Inventory Icon"))
+        .map<[string, { formula: string } | null]>((name) => [
+          name,
+          this.iconRow.getField(name, zHyphenNull(zImageFromFormula)),
+        ])
+        .filter(([_name, url]) => url !== null)
+        .flatMap(([name, _url]) => {
+          const match = name.match(/Inventory Icon \((?<color>\w+)\)/);
+          if (match) return [match.groups!["color"]!];
+          return [];
+        }),
+    ];
   }
 
   get defenses(): number[] {
-    const defenses = [this._getField("Defense (Base)", z.coerce.number())];
+    const defenses = [
+      this.dataRow.getField("Defense (Base)", z.coerce.number()),
+    ];
     for (let stars = STAR; stars.length <= 4; stars += STAR) {
-      const d = this._getField<number | null>(
+      const d = this.dataRow.getField<number | null>(
         `Defense ${stars}`,
         zHyphenNumber
       );
@@ -184,48 +259,41 @@ export class ArmorData implements Armor {
   }
 
   get enName(): string {
-    return this._getField("Name", z.string());
+    return this.dataRow.getField("Name", z.string());
   }
 
   get hasUpgrades(): boolean {
     return this.upgrades !== null && this.upgrades.length > 0;
   }
 
-  get icon(): string {
-    return `/images/armor/${this.actorName}.avif`;
+  get iconUrls(): Record<string, string> {
+    const icons: Record<string, string> = {};
+    for (const color of this.colors) {
+      icons[color] = `/images/armor/${this.actorName}_${color}.avif`;
+    }
+    return icons;
   }
 
-  private IMAGE_RE = /IMAGE\("(?<url>.+)"\)/;
-
-  private get _iconUrl(): string | null {
-    const extractImage = (val: string, ctx: RefinementCtx): string => {
-      const match = val.match(this.IMAGE_RE);
-      if (!match) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            'Formula did not match expected format of `IMAGE("${url}")`>',
-        });
-        return z.NEVER;
-      }
-      return match.groups?.["url"]!;
-    };
-
-    const result = this._getField(
-      "Inventory Icon",
-      z.nullable(z.object({ formula: z.string().transform(extractImage) }))
+  private _getIconUrl(color: string): string | null {
+    let fieldName = `Inventory Icon`;
+    if (color !== "Base") {
+      fieldName += ` (${color})`;
+    }
+    const result = this.iconRow.getField(
+      fieldName,
+      zHyphenNull(zImageFromFormula)
     );
     return result?.formula ?? null;
   }
 
   hasIcon(): boolean {
-    return this._iconUrl !== null;
+    return this._getIconUrl("Base") !== null;
   }
 
-  async getIconBuffer(): Promise<ArrayBuffer | null> {
-    const iconCell = this._iconUrl;
-    if (iconCell) {
-      const res = await fetch(iconCell);
+  async getIconBuffer(color: string): Promise<ArrayBuffer | null> {
+    const iconUrl = this._getIconUrl(color);
+    if (iconUrl) {
+      const res = await fetch(iconUrl);
       if (res.ok) return res.arrayBuffer();
       throw new Error(await res.text());
     }
@@ -234,14 +302,14 @@ export class ArmorData implements Armor {
 
   get sellingPrices(): number[] {
     const sellingPrices: number[] = [];
-    let basePrice = this._getField("Sell Price (Base)", zHyphenNumber);
+    let basePrice = this.dataRow.getField("Sell Price (Base)", zHyphenNumber);
     if (basePrice) {
       sellingPrices.push(basePrice);
     } else {
       return sellingPrices;
     }
     for (let stars = STAR; stars.length <= 4; stars += STAR) {
-      const d = this._getField(`Sell Price ${stars}`, zHyphenNumber);
+      const d = this.dataRow.getField(`Sell Price ${stars}`, zHyphenNumber);
       if (d !== null) sellingPrices.push(d);
     }
     return sellingPrices;
@@ -254,7 +322,7 @@ export class ArmorData implements Armor {
   }
 
   get slot(): Armor["slot"] {
-    const slot = this._getField("Equip Slot", z.string());
+    const slot = this.dataRow.getField("Equip Slot", z.string());
     switch (slot) {
       case "Head":
         return "head";
@@ -275,11 +343,11 @@ export class ArmorData implements Armor {
     for (let stars = STAR; stars.length <= 4; stars += STAR) {
       let materials: UpgradeIngredient[] = [];
       for (let i = 1; i <= 3; i++) {
-        const material = this._getField(
+        const material = this.dataRow.getField(
           `Upgrade Material ${stars} (${i})`,
           zHyphenNull(z.string())
         );
-        const quantity = this._getField(
+        const quantity = this.dataRow.getField(
           `Upgrade Material Quantity ${stars} (${i})`,
           zHyphenNull(z.number())
         );
@@ -297,3 +365,21 @@ export class ArmorData implements Armor {
     return upgrades;
   }
 }
+
+const IMAGE_RE = /IMAGE\("(?<url>.+)"\)/;
+
+function extractImage(val: string, ctx: RefinementCtx): string {
+  const match = val.match(IMAGE_RE);
+  if (!match) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Formula did not match expected format of `IMAGE("${url}")`>',
+    });
+    return z.NEVER;
+  }
+  return match.groups?.["url"]!;
+}
+
+const zImageFromFormula = z.nullable(
+  z.object({ formula: z.string().transform(extractImage) })
+);

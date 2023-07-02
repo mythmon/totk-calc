@@ -9,7 +9,8 @@ export interface Armor {
   defenses: number[];
   enName: string;
   hasUpgrades: boolean;
-  icon: string;
+  colors: string[];
+  iconUrls: Record<string, string>;
   sellingPrices: number[];
   setEnName: string | null;
   slot: "head" | "upper" | "lower" | "all";

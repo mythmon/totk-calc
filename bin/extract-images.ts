@@ -25,10 +25,14 @@ async function main() {
     for (const [idx, armor] of armorsForImages.entries()) {
       promises.push(
         queue.run(async () => {
-          const dest = `./public/images/armor/${armor.actorName}.avif`;
-          console.log(`(${idx + 1}/${armorsForImages.length}) ${dest}`);
-          const image = await armor.getIconBuffer();
-          if (image) await sharp(image).avif({ quality: 80 }).toFile(dest);
+          console.log(
+            `(${idx + 1}/${armorsForImages.length}) ${armor.actorName}`
+          );
+          for (const color of armor.colors) {
+            const dest = `./public/images/armor/${armor.actorName}_${color}.avif`;
+            const image = await armor.getIconBuffer(color);
+            if (image) await sharp(image).avif({ quality: 80 }).toFile(dest);
+          }
         })
       );
     }
