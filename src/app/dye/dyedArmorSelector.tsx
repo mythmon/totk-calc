@@ -53,7 +53,7 @@ export const DyedArmorSelector: Component<ArmorListClientProps> = ({
       preloadUrl.searchParams.set("url", imageUrl);
       preloadUrl.searchParams.set(
         "w",
-        ((window.devicePixelRatio ?? 1) * 128).toString()
+        (Math.floor(window.devicePixelRatio ?? 1) * 128).toString()
       );
       preloadUrl.searchParams.set("q", "75");
       const link = document.createElement("link");
