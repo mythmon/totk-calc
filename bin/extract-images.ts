@@ -22,6 +22,7 @@ async function main() {
     console.log("writing data");
     const queue = new Queue<void>(1);
     const promises: Promise<void>[] = [];
+    await fs.mkdir("./.next/cache/mythmon/downloads", { recursive: true });
     for (const [idx, armor] of armorsForImages.entries()) {
       promises.push(
         queue.run(async () => {
@@ -29,21 +30,37 @@ async function main() {
             `(${idx + 1}/${armorsForImages.length}) ${armor.actorName} `
           );
           for (const color of armor.colors) {
-            const dest = `./public/images/armor/${armor.actorName}_${color}.avif`;
+            const fileName = `${armor.actorName}_${color}.avif`;
+            const cachePath = `./.next/cache/mythmon/downloads/${fileName}`;
+            const publicPath = `./public/images/armor/${fileName}`;
             let exists;
             try {
-              await fs.access(dest, fs.constants.R_OK);
+              await fs.access(publicPath, fs.constants.R_OK);
               exists = true;
             } catch {
               exists = false;
             }
             if (exists) {
-              process.stdout.write("c");
+              process.stdout.write("e");
               continue;
             }
-            process.stdout.write("d");
+
+            try {
+              await fs.copyFile(cachePath, publicPath);
+              process.stdout.write("c");
+              continue;
+            } catch {}
+
             const image = await armor.getIconBuffer(color);
-            if (image) await sharp(image).avif({ quality: 80 }).toFile(dest);
+            if (image) {
+              const convertedBuffer = await sharp(image)
+                .avif({ quality: 80 })
+                .toBuffer();
+              await fs.writeFile(publicPath, convertedBuffer);
+              await fs.writeFile(cachePath, convertedBuffer);
+              process.stdout.write("d");
+              continue;
+            }
           }
           process.stdout.write("\n");
         })
