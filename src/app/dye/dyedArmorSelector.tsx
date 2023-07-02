@@ -51,7 +51,10 @@ export const DyedArmorSelector: Component<ArmorListClientProps> = ({
     for (const imageUrl of Object.values(selectedArmor.iconUrls)) {
       const preloadUrl = new URL("/_next/image", window.location.href);
       preloadUrl.searchParams.set("url", imageUrl);
-      preloadUrl.searchParams.set("w", "128");
+      preloadUrl.searchParams.set(
+        "w",
+        ((window.devicePixelRatio ?? 1) * 128).toString()
+      );
       preloadUrl.searchParams.set("q", "75");
       const link = document.createElement("link");
       link.setAttribute("rel", "preload");
