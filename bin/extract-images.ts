@@ -30,6 +30,14 @@ async function main() {
           );
           for (const color of armor.colors) {
             const dest = `./public/images/armor/${armor.actorName}_${color}.avif`;
+            let exists;
+            try {
+              await fs.access(dest, fs.constants.R_OK);
+              exists = true;
+            } catch {
+              exists = false;
+            }
+            if (exists) continue;
             const image = await armor.getIconBuffer(color);
             if (image) await sharp(image).avif({ quality: 80 }).toFile(dest);
           }
