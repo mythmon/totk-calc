@@ -84,6 +84,7 @@ export const DyedArmorSelector: Component<ArmorListClientProps> = ({
           {filteredArmors.map((armor) => (
             <option value={armor.actorName} key={`armor-${armor.actorName}`}>
               {armor.enName}
+              {armor.colors.length === 1 ? "   (no dyes)" : null}
             </option>
           ))}
         </Select>
