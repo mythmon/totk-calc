@@ -20,13 +20,13 @@ async function main() {
 
   if (armorsForImages.length) {
     console.log("writing data");
-    const queue = new Queue<void>(4);
+    const queue = new Queue<void>(1);
     const promises: Promise<void>[] = [];
     for (const [idx, armor] of armorsForImages.entries()) {
       promises.push(
         queue.run(async () => {
-          console.log(
-            `(${idx + 1}/${armorsForImages.length}) ${armor.actorName}`
+          process.stdout.write(
+            `(${idx + 1}/${armorsForImages.length}) ${armor.actorName} `
           );
           for (const color of armor.colors) {
             const dest = `./public/images/armor/${armor.actorName}_${color}.avif`;
@@ -37,10 +37,15 @@ async function main() {
             } catch {
               exists = false;
             }
-            if (exists) continue;
+            if (exists) {
+              process.stdout.write("c");
+              continue;
+            }
+            process.stdout.write("d");
             const image = await armor.getIconBuffer(color);
             if (image) await sharp(image).avif({ quality: 80 }).toFile(dest);
           }
+          process.stdout.write("\n");
         })
       );
     }
