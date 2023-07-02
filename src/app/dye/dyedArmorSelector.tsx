@@ -108,7 +108,7 @@ const ColorSelector: Component<ColorSelectorProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-7 gap-2 w-48">
+    <div className="grid grid-cols-7 gap-2 w-full">
       {colors.map((color) => {
         const cssColor = colorMap[color] ?? "#000000";
         const checkColor = betterContrast(cssColor, ["#ffffff", "#000000"]);
@@ -116,8 +116,11 @@ const ColorSelector: Component<ColorSelectorProps> = ({
         return (
           <div
             key={`swatch-${color}`}
-            className="w-5 h-5 pl-1 pb-1 text-sm border border-black cursor-pointer"
-            style={{ backgroundColor: cssColor, color: checkColor }}
+            className="w-full pl-1 text border border-black cursor-pointer aspect-square text-center"
+            style={{
+              backgroundColor: cssColor,
+              color: checkColor,
+            }}
             onClick={() => onChange(color)}
             title={color}
           >
