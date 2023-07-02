@@ -90,7 +90,7 @@ const ArmorCard: Component<ArmorCardProps> = ({ armor, showSet = true }) => {
         width={128}
         height={128}
         alt={armor.enName}
-        src={armor.icon}
+        src={armor.iconUrls["Base"]!}
       />
       <div className="flex-grow min-h-[1rem]" />
       {hasUpgrades ? (
@@ -197,7 +197,7 @@ const ArmorSetUpgradesCard: Component<ArmorSetCardProps> = ({
           <div className="contents">
             <div className="col-start-1 row-span-3 text-center">
               <Image
-                src={armor.icon}
+                src={armor.iconUrls["Base"]!}
                 width={96}
                 height={96}
                 alt={armor.enName}
@@ -263,7 +263,7 @@ const ArmorSetNoUpgradesCard: Component<ArmorSetCardProps> = ({
           <div className="contents">
             <div className="col-start-1 row-span-3 text-center">
               <Image
-                src={armor.icon}
+                src={armor.iconUrls["Base"]!}
                 width={96}
                 height={96}
                 alt={armor.enName}

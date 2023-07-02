@@ -2,8 +2,9 @@
 
 import type { Component } from "@/components/component";
 import { useSession, signIn, signOut } from "next-auth/react";
+import cx from "classnames";
 
-export const AuthInfo: Component = () => {
+export const AuthInfo: Component<{ className: string }> = ({ className }) => {
   const { data: session, status } = useSession();
 
   if (status === "loading") return null;
@@ -11,7 +12,7 @@ export const AuthInfo: Component = () => {
   if (status === "authenticated") {
     if (!session?.user) throw new Error("signed in but no user");
     return (
-      <div className="flex gap-1">
+      <div className={cx("flex gap-1", className)}>
         <button onClick={() => signOut()}>Sign out</button>
         <span className="pl-2 ml-2 border-l border-white">
           {session.user.name}
