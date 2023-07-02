@@ -120,17 +120,14 @@ class SheetHelper {
     validator?: ZodSchema<T, ZodTypeDef, unknown>
   ): T {
     const columnNum = this._columnMap[name];
-    if (!columnNum) {
-      console.log(this._columnMap);
-      throw new Error(`no field named ${name} found`);
-    }
+    if (!columnNum) throw new Error(`no field named ${name} found`);
     const cell = this._sheet.getCell(rowNumber, columnNum).value;
     if (validator) {
       try {
         return validator.parse(cell);
       } catch (err) {
-        console.log(`Error getting field ${name} for row ${rowNumber}`);
-        console.log(cell);
+        console.error(`Error getting field ${name} for row ${rowNumber}`);
+        console.error(cell);
         throw err;
       }
     } else {

@@ -13,7 +13,7 @@ async function main() {
     if (armor.hasIcon()) {
       return [armor];
     } else {
-      console.log(`no icon for ${armor.actorName}`);
+      console.warn(`no icon for ${armor.actorName}`);
       return [];
     }
   });

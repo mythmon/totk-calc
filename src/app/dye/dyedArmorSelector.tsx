@@ -7,6 +7,7 @@ import { useEffect, useState, type ChangeEvent } from "react";
 import { hex } from "wcag-contrast";
 import d3 from "@/lib/d3";
 import { Select } from "@/components/form/Select";
+import Head from "next/head";
 
 interface ArmorListClientProps {
   armorData: ArmorListResponse;
@@ -35,14 +36,43 @@ export const DyedArmorSelector: Component<ArmorListClientProps> = ({
     (armor) => armor.actorName === selectedArmorCode
   );
 
+  // reset to base for armors that don't have the selected dye
   useEffect(() => {
     if (selectedArmor && !selectedArmor.colors.includes(selectedColor)) {
       setSelectedColor(selectedArmor.colors[0] ?? "Base");
     }
   }, [selectedArmor, setSelectedColor, selectedColor]);
 
+  // preload other dye colors for the selected armor
+  useEffect(() => {
+    const head = document.head;
+    const links: HTMLLinkElement[] = [];
+    if (!selectedArmor) return;
+    for (const imageUrl of Object.values(selectedArmor.iconUrls)) {
+      const preloadUrl = new URL("/_next/image", window.location.href);
+      preloadUrl.searchParams.set("url", imageUrl);
+      preloadUrl.searchParams.set("w", "128");
+      preloadUrl.searchParams.set("q", "75");
+      const link = document.createElement("link");
+      link.setAttribute("rel", "preload");
+      link.setAttribute("as", "image");
+      link.setAttribute("href", preloadUrl.href);
+      links.push(link);
+      head.appendChild(link);
+    }
+
+    return () => {
+      for (const link of links) head.removeChild(link);
+    };
+  }, [selectedArmor?.iconUrls]);
+
   return (
     <>
+      <Head>
+        {Object.values(selectedArmor?.iconUrls ?? []).map((url) => (
+          <link key={`preload-${url}`} rel="preload" as="image" href={url} />
+        ))}
+      </Head>
       <div>
         <Select
           className="block w-full mb-2"
@@ -140,6 +170,5 @@ function betterContrast(background: string, foregrounds: string[]): string {
     fg,
     contrast: hex(background, fg),
   }));
-  console.log({ background, contrasts });
   return d3.greatest(contrasts, (d) => d.contrast)?.fg ?? foregrounds[0]!;
 }
