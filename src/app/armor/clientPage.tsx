@@ -10,6 +10,7 @@ import { InventoryArmorRes } from "../api/inventory/armor/types";
 import { ArmorLevelManager } from "@/components/armorLevelManager";
 import { useSession } from "next-auth/react";
 import { useGetPatchQuery } from "@/lib/react-query";
+import type { ArmorField } from "@/lib/userInventory";
 
 interface ArmorListClientProps {
   armorList: ArmorListResponse;
@@ -142,8 +143,8 @@ interface ArmorSetCardProps {
   name: string;
   armors: Armor[];
   anonymous: boolean;
-  inventory: Record<string, number | null> | null;
-  mutateHaveLevel: (patch: Record<string, number | null>) => Promise<void>;
+  inventory: Record<string, ArmorField | null> | null;
+  mutateHaveLevel: (patch: Record<string, ArmorField | null>) => Promise<void>;
 }
 
 const ArmorSetCard: Component<ArmorSetCardProps> = (props) => {
@@ -207,10 +208,17 @@ const ArmorSetUpgradesCard: Component<ArmorSetCardProps> = ({
               {armor.enName}
               {!anonymous && (
                 <ArmorLevelManager
-                  haveLevel={inventory?.[armor.actorName] ?? null}
+                  haveLevel={inventory?.[armor.actorName]?.level ?? null}
                   hasUpgrades={true}
                   setLevel={async (newLevel) =>
-                    mutateHaveLevel({ [armor.actorName]: newLevel })
+                    mutateHaveLevel({
+                      [armor.actorName]: newLevel
+                        ? {
+                            level: newLevel,
+                            dye: inventory![armor.actorName]!.dye,
+                          }
+                        : null,
+                    })
                   }
                 />
               )}

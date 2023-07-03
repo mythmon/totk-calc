@@ -1,8 +1,10 @@
 {
-  "plugins": ["@tanstack/eslint-plugin-query"],
+  "plugins": ["@tanstack/eslint-plugin-query", "eslint-plugin-neverthrow"],
+  "parser": "@typescript-eslint/parser",
   "extends": [
     "next/core-web-vitals",
-    "plugin:@tanstack/eslint-plugin-query/recommended"
+    "plugin:@tanstack/eslint-plugin-query/recommended",
+    "plugin:neverthrow/recommended"
   ],
   "ignorePatterns": ["./.next/**/*"]
 }

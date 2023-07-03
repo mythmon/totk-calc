@@ -21,7 +21,11 @@ export const QueryClientProvider: ComponentWithChildren = ({ children }) => {
 
 interface GetPatchQueryResult<T> {
   data: null | T;
+  error: unknown;
+  isError: boolean;
   isFetched: boolean;
+  isFetching: boolean;
+  isLoading: boolean;
   mutate: (patch: Partial<T>) => Promise<T>;
 }
 
@@ -40,7 +44,11 @@ export function useGetPatchQuery<T>({
   const query = useQuery<T>({
     queryKey,
     enabled: enabled !== false,
-    queryFn: () => fetch(endpoint).then((res) => res.json()),
+    queryFn: async () => {
+      const res = await fetch(endpoint);
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
   });
 
   const mutation = useMutation<T, unknown, Partial<T>>({
@@ -72,7 +80,11 @@ export function useGetPatchQuery<T>({
 
   return {
     data: query.data ?? null,
+    error: query.error,
+    isError: query.isError,
     isFetched: query.isFetched,
+    isFetching: query.isFetching,
+    isLoading: query.isLoading,
     mutate: mutation.mutateAsync,
   };
 }

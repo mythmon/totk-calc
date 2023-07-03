@@ -8,10 +8,10 @@ export const Header: Component = () => {
   return (
     <header className="flex p-3 bg-gray-800 text-white gap-6">
       <div className="bold">TOTK Calc</div>
-      <div className="contents sm:hidden">
+      <div className="contents md:hidden">
         <NavMenu />
       </div>
-      <div className="hidden sm:contents">
+      <div className="hidden md:contents">
         <NavBar />
       </div>
     </header>
@@ -26,6 +26,11 @@ interface NavLink {
 
 export const navLinks: NavLink[] = [
   { href: "/armor", text: "Armor", Icon: ArmorIcon },
+  {
+    href: "/armor-new",
+    text: "Armor 2",
+    Icon: ArmorIcon,
+  },
   { href: "/dye", text: "Dye", Icon: DyeIcon },
 ];
 

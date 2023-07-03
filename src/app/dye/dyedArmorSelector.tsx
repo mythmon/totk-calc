@@ -67,7 +67,7 @@ export const DyedArmorSelector: Component<ArmorListClientProps> = ({
     return () => {
       for (const link of links) head.removeChild(link);
     };
-  }, [selectedArmor?.iconUrls]);
+  }, [selectedArmor]);
 
   return (
     <>

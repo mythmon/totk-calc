@@ -24,7 +24,9 @@ const RootLayout: ComponentWithChildren = ({ children }) => {
         <html lang="en">
           <body className={cx(inter.variable, "font-sans")}>
             <Header />
-            {children}
+            <div className="p-2 md:p-8">
+              {children}
+            </div>
             <Analytics />
           </body>
         </html>
