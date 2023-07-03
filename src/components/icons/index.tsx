@@ -9,4 +9,6 @@ export type Icon<E = Record<never, never>> = Component<
 >;
 
 export { ArmorIcon } from "./armor";
+export { DyeIcon } from "./dye";
+export { GearIcon } from "./gear";
 export { RupeeIcon } from "./rupee";

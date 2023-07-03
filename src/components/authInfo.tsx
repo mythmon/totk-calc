@@ -5,6 +5,16 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import cx from "classnames";
 
 export const AuthInfo: Component<{ className: string }> = ({ className }) => {
+  return (
+    <div className={cx("flex flex-row-reverse gap-1", className)}>
+      <AuthInfoParts partClassName="border-l-2 border-l-white last:border-none px-2" />
+    </div>
+  );
+};
+
+export const AuthInfoParts: Component<{ partClassName?: string }> = ({
+  partClassName,
+}) => {
   const { data: session, status } = useSession();
 
   if (status === "loading") return null;
@@ -12,25 +22,31 @@ export const AuthInfo: Component<{ className: string }> = ({ className }) => {
   if (status === "authenticated") {
     if (!session?.user) throw new Error("signed in but no user");
     return (
-      <div className={cx("flex gap-1", className)}>
-        <button onClick={() => signOut()}>Sign out</button>
-        <span className="pl-2 ml-2 border-l border-white">
+      <>
+        <div className={partClassName}>
+          {session.user.image && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className="inline mr-2 w-[24px] h-[24px]"
+              src={session.user.image}
+              alt={`Avatar for ${session.user.name}`}
+            />
+          )}
           {session.user.name}
-        </span>
-        {session.user.image && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            style={{ flex: "0 0 16px", width: "24px", height: "24px" }}
-            src={session.user.image}
-            alt={`Avatar for ${session.user.name}`}
-          />
-        )}
-      </div>
+        </div>
+        <div className={partClassName}>
+          <button onClick={() => signOut()}>Sign out</button>
+        </div>
+      </>
     );
   }
 
   if (status === "unauthenticated") {
-    return <button onClick={() => signIn("discord")}>Sign in</button>;
+    return (
+      <button className={partClassName} onClick={() => signIn("discord")}>
+        Sign in
+      </button>
+    );
   }
 
   throw new Error(`Unexpected auth status ${status}`);
