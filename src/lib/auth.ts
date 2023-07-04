@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { config } from "./config";
 import z from "zod";
 import { HttpError } from "@/app/api/errors";
-import { err, fromPromise, ok, type ResultAsync } from "neverthrow";
+import { fromPromise, type ResultAsync } from "neverthrow";
 import { znt } from "./znt";
 
 export const User = znt(

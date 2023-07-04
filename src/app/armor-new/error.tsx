@@ -4,7 +4,6 @@ import type { Component } from "@/components/component";
 
 const ErrorPage: Component<{ error: Error; reset: () => void }> = ({
   error,
-  reset,
 }) => {
   let errorString = error.message ?? JSON.stringify(error);
   try {

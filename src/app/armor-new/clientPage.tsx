@@ -6,6 +6,7 @@ import { type Armor, type ArmorListResponse } from "@/lib/totkDb";
 import { InventoryArmorRes } from "../api/inventory/armor/types";
 import { signIn, useSession } from "next-auth/react";
 import { useGetPatchQuery } from "@/lib/react-query";
+import { decrement, increment } from "@/state/counter/slice";
 
 interface ArmorListClientProps {
   armorList: ArmorListResponse;
@@ -50,11 +51,10 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
           <div className="mb-4">
             <p>
               You&apos;ve collected {collectedArmors.length} armor pieces.
-              <button className="py-1 px-2 m-1 border bg-slate-200">
-                Add another
-              </button>
+              <Button>Add another</Button>
             </p>
           </div>
+          <CounterDemo />
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {collectedArmors.map((armor) => (
               <ArmorCard key={armor.actorName} armor={armor} />
@@ -87,6 +87,22 @@ const ArmorCard: Component<ArmorCardProps> = ({ armor }) => {
         alt={armor.enName}
         src={armor.iconUrls["Base"]!}
       />
+    </div>
+  );
+};
+
+import { Button } from "@/components/form/Button";
+import { useAppDispatch, useAppSelector } from "@/state/hooks";
+
+const CounterDemo: Component = () => {
+  const count = useAppSelector((state) => state.counter.value);
+  const dispatch = useAppDispatch();
+
+  return (
+    <div>
+      Counter: {count}
+      <Button onClick={() => dispatch(increment())}>+1</Button>
+      <Button onClick={() => dispatch(decrement())}>-1</Button>
     </div>
   );
 };

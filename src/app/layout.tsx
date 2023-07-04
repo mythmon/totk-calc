@@ -6,6 +6,7 @@ import cx from "classnames";
 import { SessionProvider } from "@/lib/next-auth";
 import { Header } from "@/components/header";
 import { QueryClientProvider } from "@/lib/react-query";
+import { StoreProvider } from "@/state/provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,15 +22,15 @@ const RootLayout: ComponentWithChildren = ({ children }) => {
   return (
     <SessionProvider>
       <QueryClientProvider>
-        <html lang="en">
-          <body className={cx(inter.variable, "font-sans")}>
-            <Header />
-            <div className="p-2 md:p-8">
-              {children}
-            </div>
-            <Analytics />
-          </body>
-        </html>
+        <StoreProvider>
+          <html lang="en">
+            <body className={cx(inter.variable, "font-sans")}>
+              <Header />
+              <div className="p-2 md:p-8">{children}</div>
+              <Analytics />
+            </body>
+          </html>
+        </StoreProvider>
       </QueryClientProvider>
     </SessionProvider>
   );
