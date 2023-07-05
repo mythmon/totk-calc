@@ -7,6 +7,7 @@ import { SessionProvider } from "@/lib/next-auth";
 import { Header } from "@/components/header";
 import { QueryClientProvider } from "@/lib/react-query";
 import { StoreProvider } from "@/state/provider";
+import { Modals } from "@/components/modals";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ const RootLayout: ComponentWithChildren = ({ children }) => {
             <body className={cx(inter.variable, "font-sans")}>
               <Header />
               <div className="p-2 md:p-8">{children}</div>
+              <Modals />
               <Analytics />
             </body>
           </html>

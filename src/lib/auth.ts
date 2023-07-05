@@ -27,7 +27,6 @@ export type UserSession = z.infer<typeof UserSession>;
 export function requireSession(): ResultAsync<UserSession, HttpError> {
   return fromPromise(getServerSession(config.auth), HttpError.mapErr)
     .andThen((session) => {
-      console.log(session);
       return UserSession.parseNt(session);
     })
     .mapErr((e) => HttpError.unauthorized(`${e}`));

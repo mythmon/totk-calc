@@ -12,7 +12,7 @@ const XLSX_PATH = path.join(process.cwd(), "totk-db.xlsx");
 const TOTK_DB_SHEET_ID =
   "2PACX-1vRqO27GX-Sq_B77XLHapGxeFm09GL6kscDqo_SoA05a7jRnOds3xBFj3tpTZ5-1yG-ASQ0FbDIaQdpb";
 
-const SET_DISPLAY_NAMES: Record<string, string> = {
+const SET_DISPLAY_NAMES: Record<string, string | null> = {
   ChemicalElectric: "Charged",
   ChemicalFire: "Ember",
   ChemicalIce: "Frostbite",
@@ -45,6 +45,7 @@ const SET_DISPLAY_NAMES: Record<string, string> = {
   HeadAcce: "Circlet",
   EarAcce: "Earring",
   Zelda1: "Hero's",
+  AncientHeroSoul: null,
 };
 
 export async function loadWorkbook(): Promise<Workbook> {
@@ -315,7 +316,9 @@ export class ArmorData implements Armor {
   get setEnName(): string | null {
     const setCode = this.belongingSet;
     if (!setCode) return null;
-    return `${SET_DISPLAY_NAMES[setCode] ?? setCode} set`;
+    const mapped = SET_DISPLAY_NAMES[setCode];
+    if (mapped === null) return null;
+    return `${mapped ?? setCode} set`;
   }
 
   get slot(): Armor["slot"] {

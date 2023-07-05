@@ -1,8 +1,12 @@
 import type { ComponentWithChildren } from "../component";
 import cx from "classnames";
-import { type HTMLProps } from "react";
+import { type ChangeEvent, type HTMLProps } from "react";
 
-export const Select: ComponentWithChildren<HTMLProps<HTMLSelectElement>> = ({
+interface SelectProps extends HTMLProps<HTMLSelectElement> {
+  onChange: (ev: ChangeEvent<HTMLSelectElement>) => void;
+}
+
+export const Select: ComponentWithChildren<SelectProps> = ({
   children,
   className,
   ...props

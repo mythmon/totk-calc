@@ -1,3 +1,5 @@
+import "server-only";
+
 import { userPrefix } from "./kv";
 import { kv } from "@vercel/kv";
 import type { User } from "./auth";
@@ -9,14 +11,13 @@ import { znt } from "./znt";
 type InventoryAreas = "armor";
 
 const ArmorFieldV1 = znt(z.number());
+const ArmorFieldV2Inner = z.object({ level: z.number(), dye: z.string() });
 const ArmorFieldV2 = znt(
-  z
-    .union([zu.stringToJSON(), z.record(z.any())])
-    .pipe(z.object({ level: z.number(), dye: z.string() }))
+  z.union([zu.stringToJSON(), z.record(z.any())]).pipe(ArmorFieldV2Inner)
 );
 
-export const ArmorField = ArmorFieldV2;
-export type ArmorField = z.infer<typeof ArmorFieldV2>;
+export const ArmorField = ArmorFieldV2Inner;
+export type ArmorField = z.infer<typeof ArmorField>;
 
 function parseAmorField(data: unknown): Result<ArmorField | null, Error> {
   if (data === null) return ok(null);
@@ -87,7 +88,7 @@ export class UserInventory {
     return ResultAsync.fromPromise(
       kv.hgetall(this.key("armor")),
       (e) => e as Error
-    ).andThen<ResultAsync<Record<string, ArmorField>, Error>>((records) =>
+    ).map<Record<string, ArmorField>>((records) =>
       Object.fromEntries(
         Object.entries(records ?? {})
           .map(([k, v]) => [k, parseAmorField(v)])

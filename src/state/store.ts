@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { counterReducer } from "@/state/counter/slice";
+import { modalReducer } from "./slices/modal";
+import { armorReducer } from "./slices/armor";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    modal: modalReducer,
+    armor: armorReducer,
   },
 });
 

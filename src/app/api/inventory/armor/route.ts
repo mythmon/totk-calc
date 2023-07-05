@@ -9,12 +9,12 @@ export async function GET(): Promise<
   NextResponse<InventoryArmorRes> | ErrorResponse
 > {
   return await requireSession()
-    .map(async (session) => {
+    .andThen((session) => {
       const inventory = new UserInventory(session.user);
-      return { armor: await inventory.getAllArmor() };
+      return inventory.getAllArmor().mapErr(HttpError.mapErr);
     })
     .match<NextResponse<InventoryArmorRes> | ErrorResponse>(
-      (data) => NextResponse.json(data),
+      (armor) => NextResponse.json({ armor }),
       (err) => err.toResponse()
     );
 }
