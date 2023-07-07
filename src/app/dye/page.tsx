@@ -1,5 +1,5 @@
 import type { ServerComponent } from "@/components/component";
-import { fetchArmorList } from "@/lib/totkDb";
+import { fetchArmorList } from "@/lib/server/totkDb";
 import { DyedArmorSelector } from "./dyedArmorSelector";
 
 const DyePage: ServerComponent = async () => {

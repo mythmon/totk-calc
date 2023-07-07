@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UserInventory } from "@/lib/userInventory";
+import { UserInventory } from "@/lib/server/userInventory";
 import { InventoryArmorRes } from "./types";
-import { requireSession } from "@/lib/auth";
+import { requireSession } from "@/lib/server/auth";
 import { HttpError, type ErrorResponse } from "@/app/api/errors";
-import { json } from "@/lib/http";
+import { json } from "@/lib/server/http";
 
 export async function GET(): Promise<
   NextResponse<InventoryArmorRes> | ErrorResponse

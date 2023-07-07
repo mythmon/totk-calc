@@ -2,14 +2,14 @@
 
 import type { Component } from "@/components/component";
 import Image from "next/image";
-import { type Armor, type ArmorListResponse } from "@/lib/totkDb";
-import { signIn, useSession } from "next-auth/react";
+import { type Armor, type ArmorListResponse } from "@/lib/server/totkDb";
 import { Button } from "@/components/form/Button";
 import { useAppDispatch } from "@/state/hooks";
 import { modalActions } from "@/state/slices/modal";
 import { useEffect } from "react";
 import { armorActions } from "@/state/slices/armor";
-import { useArmorInventoryQuery } from "@/lib/hooks/useArmorInventory";
+import { useArmorInventoryQuery } from "@/lib/client/hooks/useArmorInventory";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 interface ArmorListClientProps {
   armorList: ArmorListResponse;
@@ -18,8 +18,7 @@ interface ArmorListClientProps {
 export const ArmorListClient: Component<ArmorListClientProps> = ({
   armorList,
 }) => {
-  const session = useSession();
-  const anonymous = session.status === "unauthenticated";
+  const session = useUser();
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -28,48 +27,44 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
 
   const armorInventoryQuery = useArmorInventoryQuery();
 
+  const loading =
+    session.isLoading || (session.user && armorInventoryQuery.isLoading);
+
   if (armorInventoryQuery.isError) {
     throw armorInventoryQuery.error;
-  }
-
-  if (anonymous) {
-    return (
-      <p>
-        <button onClick={() => signIn("discord")}>Sign in</button>
-        to start tracking armors.
-      </p>
-    );
   }
 
   const collectedArmors = armorList.armors.filter((a) =>
     Object.hasOwn(armorInventoryQuery.data?.armor ?? {}, a.actorName)
   );
 
+  if (loading) {
+    return <>Loading...</>;
+  }
+
+  if (!session.user) {
+    return (
+      <p>
+        <a href="/api/auth/login">Login</a> to start tracking armors.
+      </p>
+    );
+  }
+
   return (
     <>
-      <h1 className="text-xl font-bold">Armor</h1>
-
-      {armorInventoryQuery.isLoading ? (
-        <>Loading...</>
-      ) : (
-        <>
-          <div className="mb-4">
-            <p>
-              You&apos;ve collected {collectedArmors.length} armor pieces.
-              <Button
-                onClick={() => dispatch(modalActions.showModal("add-armor"))}
-              >
-                Add another
-              </Button>
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {collectedArmors.map((armor) => (
-              <ArmorCard key={armor.actorName} armor={armor} />
-            ))}
-          </div>
-        </>
-      )}
+      <div className="mb-4">
+        <p>
+          You&apos;ve collected {collectedArmors.length} armor pieces.
+          <Button onClick={() => dispatch(modalActions.showModal("add-armor"))}>
+            Add another
+          </Button>
+        </p>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {collectedArmors.map((armor) => (
+          <ArmorCard key={armor.actorName} armor={armor} />
+        ))}
+      </div>
     </>
   );
 };

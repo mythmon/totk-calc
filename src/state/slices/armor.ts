@@ -1,4 +1,4 @@
-import type { Armor } from "@/lib/totkDb";
+import type { Armor } from "@/lib/server/totkDb";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { useAppSelector } from "../hooks";
 

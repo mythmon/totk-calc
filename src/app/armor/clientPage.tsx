@@ -3,14 +3,14 @@
 import type { Component } from "@/components/component";
 import Image from "next/image";
 import { ArmorIcon, RupeeIcon } from "@/components/icons";
-import d3 from "@/lib/d3";
+import d3 from "@/lib/shared/d3";
 import cx from "classnames";
-import { type Armor, type ArmorListResponse } from "@/lib/totkDb";
+import { type Armor, type ArmorListResponse } from "@/lib/server/totkDb";
 import { InventoryArmorRes } from "../api/inventory/armor/types";
 import { ArmorLevelManager } from "@/components/armorLevelManager";
-import { useSession } from "next-auth/react";
-import { useGetPatchQuery } from "@/lib/react-query";
-import type { ArmorField } from "@/lib/userInventory";
+import { useGetPatchQuery } from "@/lib/client/hooks/react-query";
+import type { ArmorField } from "@/lib/shared/armor";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 interface ArmorListClientProps {
   armorList: ArmorListResponse;
@@ -20,52 +20,49 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
   armorList,
 }) => {
   const armorsBySet = d3.group(armorList.armors, (d) => d.setEnName);
-  const session = useSession();
-  const anonymous = session.status === "unauthenticated";
+  const session = useUser();
 
   const armorInventoryQuery = useGetPatchQuery<InventoryArmorRes>({
     endpoint: "/api/inventory/armor",
-    enabled: !anonymous,
+    enabled: !!session.user,
   });
 
-  const loaded = anonymous || armorInventoryQuery.isFetched;
+  const loading =
+    session.isLoading || (session.user && armorInventoryQuery.isLoading);
+
+  if (loading) {
+    return <>Loading...</>;
+  }
 
   return (
-    <div className="p-2 md:p-8">
-      <h1 className="text-xl font-bold">Armor</h1>
-      <p>{armorList.armors.length} armor pieces</p>
-
-      {loaded && (
-        <div className="flex flex-wrap gap-4">
-          {Array.from(armorsBySet.entries(), ([setName, armors]) => {
-            armors = d3.sort(armors, (d) =>
-              ["head", "upper", "lower"].indexOf(d.slot)
-            );
-            if (!setName || armors.length === 1) {
-              return armors.map((armor) => (
-                <ArmorCard
-                  key={`armor-${armor.actorName}`}
-                  armor={armor}
-                  showSet={false}
-                />
-              ));
-            } else {
-              return (
-                <ArmorSetCard
-                  key={`set-${setName}`}
-                  name={setName}
-                  armors={armors}
-                  anonymous={anonymous}
-                  inventory={armorInventoryQuery.data?.armor ?? null}
-                  mutateHaveLevel={async (patch) => {
-                    await armorInventoryQuery.mutate({ armor: patch });
-                  }}
-                />
-              );
-            }
-          })}
-        </div>
-      )}
+    <div className="flex flex-wrap gap-4">
+      {Array.from(armorsBySet.entries(), ([setName, armors]) => {
+        armors = d3.sort(armors, (d) =>
+          ["head", "upper", "lower"].indexOf(d.slot)
+        );
+        if (!setName || armors.length === 1) {
+          return armors.map((armor) => (
+            <ArmorCard
+              key={`armor-${armor.actorName}`}
+              armor={armor}
+              showSet={false}
+            />
+          ));
+        } else {
+          return (
+            <ArmorSetCard
+              key={`set-${setName}`}
+              name={setName}
+              armors={armors}
+              anonymous={!!session.user}
+              inventory={armorInventoryQuery.data?.armor ?? null}
+              mutateHaveLevel={async (patch) => {
+                await armorInventoryQuery.mutate({ armor: patch });
+              }}
+            />
+          );
+        }
+      })}
     </div>
   );
 };
@@ -160,9 +157,19 @@ const ArmorSetCard: Component<ArmorSetCardProps> = (props) => {
 
   const hasUpgrades = !!props.armors.every((a) => a.hasUpgrades);
   if (hasUpgrades) {
-    return <ArmorSetUpgradesCard {...props} />;
+    return (
+      <ArmorSetUpgradesCard
+        key={`armor-set-${props.armors[0]?.belongingSet}`}
+        {...props}
+      />
+    );
   } else {
-    return <ArmorSetNoUpgradesCard {...props} />;
+    return (
+      <ArmorSetNoUpgradesCard
+        key={`armor-set-${props.armors[0]?.belongingSet}`}
+        {...props}
+      />
+    );
   }
 };
 
@@ -194,8 +201,11 @@ const ArmorSetUpgradesCard: Component<ArmorSetCardProps> = ({
       </div>
       {armors.map((armor) => (
         <>
-          <hr className="col-start-1 col-end-[-1] border-b border-slate-300 w-full my-1 col-span-9" />
-          <div className="contents">
+          <hr
+            key={`armor-hr-${armor.actorName}`}
+            className="col-start-1 col-end-[-1] border-b border-slate-300 w-full my-1 col-span-9"
+          />
+          <div key={`armor-${armor.actorName}`} className="contents">
             <div className="col-start-1 row-span-3 text-center">
               <Image
                 src={armor.iconUrls["Base"]!}
@@ -267,8 +277,11 @@ const ArmorSetNoUpgradesCard: Component<ArmorSetCardProps> = ({
       </div>
       {armors.map((armor) => (
         <>
-          <hr className="col-start-1 col-end-[-1] border-b border-slate-300 w-full my-1" />
-          <div className="contents">
+          <hr
+            key={`armor-hr-${armor.actorName}`}
+            className="col-start-1 col-end-[-1] border-b border-slate-300 w-full my-1"
+          />
+          <div key={`armor-${armor.actorName}`} className="contents">
             <div className="col-start-1 row-span-3 text-center">
               <Image
                 src={armor.iconUrls["Base"]!}

@@ -3,11 +3,11 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import cx from "classnames";
-import { SessionProvider } from "@/lib/next-auth";
 import { Header } from "@/components/header";
-import { QueryClientProvider } from "@/lib/react-query";
+import { QueryClientProvider } from "@/lib/client/hooks/react-query";
 import { StoreProvider } from "@/state/provider";
 import { Modals } from "@/components/modals";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,7 +21,7 @@ export const metadata = {
 
 const RootLayout: ComponentWithChildren = ({ children }) => {
   return (
-    <SessionProvider>
+    <UserProvider>
       <QueryClientProvider>
         <StoreProvider>
           <html lang="en">
@@ -34,7 +34,7 @@ const RootLayout: ComponentWithChildren = ({ children }) => {
           </html>
         </StoreProvider>
       </QueryClientProvider>
-    </SessionProvider>
+    </UserProvider>
   );
 };
 

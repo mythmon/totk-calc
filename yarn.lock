@@ -15,6 +15,21 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
+"@auth0/nextjs-auth0@^3.0.0-beta.3":
+  version "3.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@auth0/nextjs-auth0/-/nextjs-auth0-3.0.0-beta.3.tgz#18aa033433cf78ee0be8a8696bdb2ac16159b234"
+  integrity sha512-Wbf2JeeZwGtjbQF8KWggjkMcNUq7/OZcLQGia3YhbVTSYXd++HQs27DYOSZ9UhQRkYS0MrfjARdYZqJHk/CSjw==
+  dependencies:
+    "@panva/hkdf" "^1.0.2"
+    cookie "^0.5.0"
+    debug "^4.3.4"
+    joi "^17.6.0"
+    jose "^4.9.2"
+    oauth4webapi "^2.3.0"
+    openid-client "^5.2.1"
+    tslib "^2.4.0"
+    url-join "^4.0.1"
+
 "@babel/code-frame@^7.22.5":
   version "7.22.5"
   resolved "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.22.5.tgz"
@@ -965,7 +980,7 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
-"@babel/runtime@^7.12.5", "@babel/runtime@^7.20.13", "@babel/runtime@^7.20.7", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.12.5", "@babel/runtime@^7.20.7", "@babel/runtime@^7.8.4":
   version "7.22.5"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.22.5.tgz"
   integrity sha512-ecjvYlnAaZ/KVneE/OdKYBYfgXV3Ptu6zQWmgEF7vwKhQnvVS6bjMD2XYgj+SNvQ1GfK/pjgokfPkC/2CO8CuA==
@@ -1352,6 +1367,18 @@
   resolved "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.3.tgz"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
+"@hapi/hoek@^9.0.0":
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"
+  integrity sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==
+
+"@hapi/topo@^5.0.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@hapi/topo/-/topo-5.1.0.tgz#dc448e332c6c6e37a4dc02fd84ba8d44b9afb012"
+  integrity sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==
+  dependencies:
+    "@hapi/hoek" "^9.0.0"
+
 "@heroicons/react@^2.0.18":
   version "2.0.18"
   resolved "https://registry.npmjs.org/@heroicons/react/-/react-2.0.18.tgz"
@@ -1574,10 +1601,10 @@
     redux-thunk "^2.4.2"
     reselect "^4.1.8"
 
-"@remix-run/dev@npm:@vercel/remix-run-dev@1.17.0":
-  version "1.17.0"
-  resolved "https://registry.npmjs.org/@vercel/remix-run-dev/-/remix-run-dev-1.17.0.tgz"
-  integrity sha512-S71dx9sxHi/9Ery9za+ryQYNq5rEA/OeWFaKalHsgA7jYhiJC2U2iP9lV4m251oLXp3K6J8gwY0zF1CWmA7ANA==
+"@remix-run/dev@npm:@vercel/remix-run-dev@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@vercel/remix-run-dev/-/remix-run-dev-1.18.0.tgz#8c53c2a5c4fed60f3b39d923fd38ed42b7aa16dd"
+  integrity sha512-5vGcc3OTBLZImKY0BMXDXDqdh0mjh4ZqptI9eRwXZ9O5AfGp4Ce7Q8tNldazBVOJMM4fGgLeXRIOTfuRDe5tDA==
   dependencies:
     "@babel/core" "^7.21.8"
     "@babel/generator" "^7.21.5"
@@ -1589,7 +1616,7 @@
     "@babel/traverse" "^7.21.5"
     "@babel/types" "^7.21.5"
     "@npmcli/package-json" "^2.0.0"
-    "@remix-run/server-runtime" "1.17.0"
+    "@remix-run/server-runtime" "1.18.0"
     "@vanilla-extract/integration" "^6.2.0"
     arg "^5.0.1"
     cacache "^15.0.5"
@@ -1597,7 +1624,7 @@
     chokidar "^3.5.1"
     dotenv "^16.0.0"
     esbuild "0.17.6"
-    esbuild-plugin-polyfill-node "^0.2.0"
+    esbuild-plugins-node-modules-polyfill "^1.0.16"
     execa "5.1.1"
     exit-hook "2.2.1"
     express "^4.17.1"
@@ -1610,11 +1637,12 @@
     json5 "^2.2.2"
     lodash "^4.17.21"
     lodash.debounce "^4.0.8"
-    lru-cache "^7.14.1"
     minimatch "^9.0.0"
     node-fetch "^2.6.9"
     ora "^5.4.1"
+    picocolors "^1.0.0"
     picomatch "^2.3.1"
+    pidtree "^0.6.0"
     postcss "^8.4.19"
     postcss-discard-duplicates "^5.1.0"
     postcss-load-config "^4.0.1"
@@ -1633,17 +1661,18 @@
     ws "^7.4.5"
     xdm "^2.0.0"
 
-"@remix-run/router@1.6.3":
-  version "1.6.3"
-  resolved "https://registry.npmjs.org/@remix-run/router/-/router-1.6.3.tgz"
-  integrity sha512-EXJysQ7J3veRECd0kZFQwYYd5sJMcq2O/m60zu1W2l3oVQ9xtub8jTOtYRE0+M2iomyG/W3Ps7+vp2kna0C27Q==
+"@remix-run/router@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.7.0.tgz#550a8d5760b78efc5d60f62b5829b0f74c1fde81"
+  integrity sha512-Eu1V3kz3mV0wUpVTiFHuaT8UD1gj/0VnoFHQYX35xlslQUpe8CuYoKFn9d4WZFHm3yDywz6ALZuGdnUPKrNeAw==
 
-"@remix-run/server-runtime@1.17.0":
-  version "1.17.0"
-  resolved "https://registry.npmjs.org/@remix-run/server-runtime/-/server-runtime-1.17.0.tgz"
-  integrity sha512-xcUXaOibfIFZlvuyuWouz/t3fYhHCqRoKeGxQFGd1BvQBCmPaiau7B1Ao4aJFKyY7eU/L35KCaGzZBTdIF+d5w==
+"@remix-run/server-runtime@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/server-runtime/-/server-runtime-1.18.0.tgz#76b8e3bcc4883a8bdec9bae603db9ea0e09c396b"
+  integrity sha512-iiSKgGIWMkvf4ftnjGBmIJpgqxRwv8XQilAINapaYsx1zEM6egZGYE6WvaxLuRQSceZZNgLAYzL48TmK+DAU5g==
   dependencies:
-    "@remix-run/router" "1.6.3"
+    "@remix-run/router" "1.7.0"
+    "@types/cookie" "^0.4.1"
     "@web3-storage/multipart-parser" "^1.0.0"
     cookie "^0.4.1"
     set-cookie-parser "^2.4.8"
@@ -1661,6 +1690,23 @@
   version "1.3.2"
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.3.2.tgz"
   integrity sha512-V+MvGwaHH03hYhY+k6Ef/xKd6RYlc4q8WBx+2ANmipHJcKuktNcI/NgEsJgdSUF6Lw32njT6OnrRsKYCdgHjYw==
+
+"@sideway/address@^4.1.3":
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.4.tgz#03dccebc6ea47fdc226f7d3d1ad512955d4783f0"
+  integrity sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==
+  dependencies:
+    "@hapi/hoek" "^9.0.0"
+
+"@sideway/formula@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@sideway/formula/-/formula-3.0.1.tgz#80fcbcbaf7ce031e0ef2dd29b1bfc7c3f583611f"
+  integrity sha512-/poHZJJVjx3L+zVD6g9KgHfYnb443oi7wLu/XKojDviHy6HOEOA6z1Trk5aR1dGcmPenJEgb2sK2I80LeS3MIg==
+
+"@sideway/pinpoint@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@sideway/pinpoint/-/pinpoint-2.0.0.tgz#cff8ffadc372ad29fd3f78277aeb29e632cc70df"
+  integrity sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
 
 "@sinclair/typebox@0.25.24":
   version "0.25.24"
@@ -1791,6 +1837,11 @@
     "@types/keyv" "^3.1.4"
     "@types/node" "*"
     "@types/responselike" "^1.0.0"
+
+"@types/cookie@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.4.1.tgz#bfd02c1f2224567676c1545199f87c3a861d878d"
+  integrity sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==
 
 "@types/d3-array@^3.0.5":
   version "3.0.5"
@@ -2112,10 +2163,10 @@
   resolved "https://registry.npmjs.org/@vercel/analytics/-/analytics-1.0.1.tgz"
   integrity sha512-Ux0c9qUfkcPqng3vrR0GTrlQdqNJ2JREn/2ydrVuKwM3RtMfF2mWX31Ijqo1opSjNAq6rK76PwtANw6kl6TAow==
 
-"@vercel/build-utils@6.7.5":
-  version "6.7.5"
-  resolved "https://registry.npmjs.org/@vercel/build-utils/-/build-utils-6.7.5.tgz"
-  integrity sha512-nzglYEz9BvZH0lptfTtTVDDD3Dyn31gnBGChOUT7J1jkzlMT1IReuysgJPisaWk4v92Ax5SpZL35I0lOQdfKwQ==
+"@vercel/build-utils@6.8.0":
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-6.8.0.tgz#0d9f7900fe82608ab985462ed731a41b5b4afafc"
+  integrity sha512-rGKTC1wCJeHvyEM4Td35M528XYPECcrb5xNF1k784BTVW4GicH6AQxr2YunfK+zkMBeR9WmG7fFAzEg38FLarw==
 
 "@vercel/error-utils@1.0.10":
   version "1.0.10"
@@ -2130,14 +2181,14 @@
     "@babel/runtime" "7.12.1"
     web-vitals "0.2.4"
 
-"@vercel/gatsby-plugin-vercel-builder@1.3.10":
-  version "1.3.10"
-  resolved "https://registry.npmjs.org/@vercel/gatsby-plugin-vercel-builder/-/gatsby-plugin-vercel-builder-1.3.10.tgz"
-  integrity sha512-LtmjAUrH+1G4ryyjCCqITvPivEFb6qby7rVGRplb+rtI5RrT/igqz95FrAC70+xpSVsqz4nu3j15NkEIR3woog==
+"@vercel/gatsby-plugin-vercel-builder@1.3.11":
+  version "1.3.11"
+  resolved "https://registry.yarnpkg.com/@vercel/gatsby-plugin-vercel-builder/-/gatsby-plugin-vercel-builder-1.3.11.tgz#7d508c428f3257fa147af93ad140872651c7b0bb"
+  integrity sha512-e+HY3OHC89NRTwcIlxZ3BdOnZ11xgAkA185Z+tkCLUNLowAigwdPxnelGcqSQaGTguwf+3nWxi8GUDYwtHi6/Q==
   dependencies:
     "@sinclair/typebox" "0.25.24"
-    "@vercel/build-utils" "6.7.5"
-    "@vercel/node" "2.15.2"
+    "@vercel/build-utils" "6.8.0"
+    "@vercel/node" "2.15.3"
     "@vercel/routing-utils" "2.2.1"
     esbuild "0.14.47"
     etag "1.8.1"
@@ -2160,10 +2211,10 @@
   dependencies:
     "@upstash/redis" "1.21.0"
 
-"@vercel/next@3.8.6":
-  version "3.8.6"
-  resolved "https://registry.npmjs.org/@vercel/next/-/next-3.8.6.tgz"
-  integrity sha512-q+BxVLAfKFjTcak+z3U0SvYpgsnF8spu3Wz0GdRSVHiZpd1TtmIIp5r5RT5WVJLt4NNgmD4KxLNbvXhwjxOFKA==
+"@vercel/next@3.8.8":
+  version "3.8.8"
+  resolved "https://registry.yarnpkg.com/@vercel/next/-/next-3.8.8.tgz#421048c3e80a124152500cee36d6568a70afccc6"
+  integrity sha512-h/TcVnrjnRrxkgTod80Wpy9Lo2k+DCpsNtRX+G0tJ8q8/WxMucQQ0dLv0t3J5vwmypowPzYzK5kKSfrewQVMxg==
 
 "@vercel/nft@0.22.5":
   version "0.22.5"
@@ -2182,17 +2233,17 @@
     node-gyp-build "^4.2.2"
     resolve-from "^5.0.0"
 
-"@vercel/node@2.15.2":
-  version "2.15.2"
-  resolved "https://registry.npmjs.org/@vercel/node/-/node-2.15.2.tgz"
-  integrity sha512-1Dn4hdQY/ErHXOB0+h3I0zIlqAb6/2LRBi+8Od+MYG8ooGKkTsK+j9IPWVBWn6ycBsM0eeNTIhqgYSGTYbMjMw==
+"@vercel/node@2.15.3":
+  version "2.15.3"
+  resolved "https://registry.yarnpkg.com/@vercel/node/-/node-2.15.3.tgz#83593133ded7e58400df7719c50ed4e8a518750d"
+  integrity sha512-kqti7lE6TT3sESXMsCm4lqtNXjyKr9P7+yhjDDL/TIzqfhqPLuiYmkiKYVNctnsdLrzDi9Cp2qaQA2a9/jpv1g==
   dependencies:
     "@edge-runtime/node-utils" "2.0.3"
     "@edge-runtime/primitives" "2.1.2"
     "@edge-runtime/vm" "3.0.1"
     "@types/node" "14.18.33"
     "@types/node-fetch" "2.6.3"
-    "@vercel/build-utils" "6.7.5"
+    "@vercel/build-utils" "6.8.0"
     "@vercel/error-utils" "1.0.10"
     "@vercel/static-config" "2.0.17"
     async-listen "3.0.0"
@@ -2219,13 +2270,13 @@
     "@vercel/routing-utils" "2.2.1"
     semver "6.1.1"
 
-"@vercel/remix-builder@1.8.14":
-  version "1.8.14"
-  resolved "https://registry.npmjs.org/@vercel/remix-builder/-/remix-builder-1.8.14.tgz"
-  integrity sha512-4CnYxCv6rgRxyXGnpGySf+K2rihLgTkMKN9pYJKQJh/VmlBcxqYP9tndDEH8sYtDsdUZuSfuX3ecajGuqb/wPA==
+"@vercel/remix-builder@1.8.15":
+  version "1.8.15"
+  resolved "https://registry.yarnpkg.com/@vercel/remix-builder/-/remix-builder-1.8.15.tgz#a2e5cf412631ab0697dda0994ce31d3358e6151c"
+  integrity sha512-NV6YU2hwj1faLpldKEQmYWJ6+aGYUJLx2sCkWoEQy+WP9i4wHw0c3u+y+PfMlr3VBn1VIlDh1awf0NRXMcIEQg==
   dependencies:
-    "@remix-run/dev" "npm:@vercel/remix-run-dev@1.17.0"
-    "@vercel/build-utils" "6.7.5"
+    "@remix-run/dev" "npm:@vercel/remix-run-dev@1.18.0"
+    "@vercel/build-utils" "6.8.0"
     "@vercel/nft" "0.22.5"
     "@vercel/static-config" "2.0.17"
     path-to-regexp "6.2.1"
@@ -2246,13 +2297,13 @@
   resolved "https://registry.npmjs.org/@vercel/ruby/-/ruby-1.3.76.tgz"
   integrity sha512-J8I0B7wAn8piGoPhBroBfJWgMEJTMEL/2o8MCoCyWdaE7MRtpXhI10pj8IvcUvAECoGJ+SM1Pm+SvBqtbtZ5FQ==
 
-"@vercel/static-build@1.3.37":
-  version "1.3.37"
-  resolved "https://registry.npmjs.org/@vercel/static-build/-/static-build-1.3.37.tgz"
-  integrity sha512-AkmWV8sqXUqkVj4F7vt7LZ9cRfO57U7he23l3xvykD/xV2ufsuLxwgIS9idM5AeqVh7juJNuTJq+ObIht6OgLw==
+"@vercel/static-build@1.3.38":
+  version "1.3.38"
+  resolved "https://registry.yarnpkg.com/@vercel/static-build/-/static-build-1.3.38.tgz#b532a8b156b98e654b0219ba8f4d7496a6a32459"
+  integrity sha512-fm2msCefaFTOttvMoNp+/AOpwQLP79NbTZxDuEwE3CU4YUCNOrTaYTGj7ye99Qv+GcL66f4JyCrbBa7CKwmL8A==
   dependencies:
     "@vercel/gatsby-plugin-vercel-analytics" "1.0.10"
-    "@vercel/gatsby-plugin-vercel-builder" "1.3.10"
+    "@vercel/gatsby-plugin-vercel-builder" "1.3.11"
 
 "@vercel/static-config@2.0.17":
   version "2.0.17"
@@ -3583,13 +3634,14 @@ esbuild-openbsd-64@0.14.47:
   resolved "https://registry.yarnpkg.com/esbuild-openbsd-64/-/esbuild-openbsd-64-0.14.47.tgz#309af806db561aa886c445344d1aacab850dbdc5"
   integrity sha512-QpgN8ofL7B9z8g5zZqJE+eFvD1LehRlxr25PBkjyyasakm4599iroUpaj96rdqRlO2ShuyqwJdr+oNqWwTUmQw==
 
-esbuild-plugin-polyfill-node@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/esbuild-plugin-polyfill-node/-/esbuild-plugin-polyfill-node-0.2.0.tgz"
-  integrity sha512-rpCoK4mag0nehBtFlFMLSuL9bNBLEh8h3wZ/FsrJEDompA/AwOqInx6Xow01+CXAcvZYhkoJ0SIZiS37qkecDA==
+esbuild-plugins-node-modules-polyfill@^1.0.16:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/esbuild-plugins-node-modules-polyfill/-/esbuild-plugins-node-modules-polyfill-1.2.0.tgz#06de57620bc470e78999ba99664dca936cfbe7c4"
+  integrity sha512-jWyCoWQKRbxUUfWLO900IyBDHihavTMbQLCDRq8xqj6NhQ75eW7YRvdraSDzFqQ6/eLnhNZlvantQtYbZjqU0A==
   dependencies:
     "@jspm/core" "^2.0.1"
-    import-meta-resolve "^2.2.2"
+    local-pkg "^0.4.3"
+    resolve.exports "^2.0.2"
 
 esbuild-sunos-64@0.14.47:
   version "0.14.47"
@@ -4807,11 +4859,6 @@ import-fresh@^3.0.0, import-fresh@^3.2.1:
     parent-module "^1.0.0"
     resolve-from "^4.0.0"
 
-import-meta-resolve@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.npmjs.org/import-meta-resolve/-/import-meta-resolve-2.2.2.tgz"
-  integrity sha512-f8KcQ1D80V7RnqVm+/lirO9zkOxjGxhaTC1IPrBGd3MEfNgmNG67tSUO9gTi2F3Blr2Az6g1vocaxzkVnWl9MA==
-
 imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "https://registry.npmjs.org/imurmurhash/-/imurmurhash-0.1.4.tgz"
@@ -5178,7 +5225,18 @@ jiti@^1.18.2:
   resolved "https://registry.npmjs.org/jiti/-/jiti-1.18.2.tgz"
   integrity sha512-QAdOptna2NYiSSpv0O/BwoHBSmz4YhpzJHyi+fnMRTXFjp7B8i/YG5Z8IfusxB1ufjcD2Sre1F3R+nX3fvy7gg==
 
-jose@^4.11.4, jose@^4.14.1:
+joi@^17.6.0:
+  version "17.9.2"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-17.9.2.tgz#8b2e4724188369f55451aebd1d0b1d9482470690"
+  integrity sha512-Itk/r+V4Dx0V3c7RLFdRh12IOjySm2/WGPMubBT92cQvRfYZhPM2W0hZlctjj72iES8jsRCwp7S/cRmWBnJ4nw==
+  dependencies:
+    "@hapi/hoek" "^9.0.0"
+    "@hapi/topo" "^5.0.0"
+    "@sideway/address" "^4.1.3"
+    "@sideway/formula" "^3.0.1"
+    "@sideway/pinpoint" "^2.0.0"
+
+jose@^4.14.4, jose@^4.9.2:
   version "4.14.4"
   resolved "https://registry.npmjs.org/jose/-/jose-4.14.4.tgz"
   integrity sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g==
@@ -5377,6 +5435,11 @@ loader-utils@^3.2.0:
   resolved "https://registry.npmjs.org/loader-utils/-/loader-utils-3.2.1.tgz"
   integrity sha512-ZvFw1KWS3GVyYBYb7qkmRM/WwL2TQQBxgCK62rlvm4WpVQ23Nb4tYjApUlfjrEGvOs7KHEsmyUn75OHZrJMWPw==
 
+local-pkg@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/local-pkg/-/local-pkg-0.4.3.tgz#0ff361ab3ae7f1c19113d9bb97b98b905dbc4963"
+  integrity sha512-SFppqq5p42fe2qcZQqqEOiVRXl+WCP1MdT6k7BDEW1j++sp5fIY+/fdRQitvKgB5BrBcmrs5m/L0v2FrU5MY1g==
+
 locate-path@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmjs.org/locate-path/-/locate-path-6.0.0.tgz"
@@ -5512,11 +5575,6 @@ lru-cache@^6.0.0:
   integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   dependencies:
     yallist "^4.0.0"
-
-lru-cache@^7.14.1:
-  version "7.18.3"
-  resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-7.18.3.tgz"
-  integrity sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==
 
 make-dir@^3.1.0:
   version "3.1.0"
@@ -6198,21 +6256,6 @@ neverthrow@^6.0.0:
   resolved "https://registry.yarnpkg.com/neverthrow/-/neverthrow-6.0.0.tgz#bacd7661cade296ccc5c35760bb3b679214155b6"
   integrity sha512-kPZKRs4VkdloCGQXPoP84q4sT/1Z+lYM61AXyV8wWa2hnuo5KpPBF2S3crSFnMrOgUISmEBP8Vo/ngGZX60NhA==
 
-next-auth@^4.22.1:
-  version "4.22.1"
-  resolved "https://registry.npmjs.org/next-auth/-/next-auth-4.22.1.tgz"
-  integrity sha512-NTR3f6W7/AWXKw8GSsgSyQcDW6jkslZLH8AiZa5PQ09w1kR8uHtR9rez/E9gAq/o17+p0JYHE8QjF3RoniiObA==
-  dependencies:
-    "@babel/runtime" "^7.20.13"
-    "@panva/hkdf" "^1.0.2"
-    cookie "^0.5.0"
-    jose "^4.11.4"
-    oauth "^0.9.15"
-    openid-client "^5.4.0"
-    preact "^10.6.3"
-    preact-render-to-string "^5.1.19"
-    uuid "^8.3.2"
-
 next@13.4.6:
   version "13.4.6"
   resolved "https://registry.npmjs.org/next/-/next-13.4.6.tgz"
@@ -6324,10 +6367,10 @@ npmlog@^5.0.1:
     gauge "^3.0.0"
     set-blocking "^2.0.0"
 
-oauth@^0.9.15:
-  version "0.9.15"
-  resolved "https://registry.npmjs.org/oauth/-/oauth-0.9.15.tgz"
-  integrity sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==
+oauth4webapi@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-2.3.0.tgz#d01aeb83b60dbe3ff9ef1c6ec4a39e29c7be7ff6"
+  integrity sha512-JGkb5doGrwzVDuHwgrR4nHJayzN4h59VCed6EW8Tql6iHDfZIabCJvg6wtbn5q6pyB2hZruI3b77Nudvq7NmvA==
 
 object-assign@^4.0.1, object-assign@^4.1.1:
   version "4.1.1"
@@ -6442,12 +6485,12 @@ open@^9.1.0:
     is-inside-container "^1.0.0"
     is-wsl "^2.2.0"
 
-openid-client@^5.4.0:
-  version "5.4.2"
-  resolved "https://registry.npmjs.org/openid-client/-/openid-client-5.4.2.tgz"
-  integrity sha512-lIhsdPvJ2RneBm3nGBBhQchpe3Uka//xf7WPHTIglery8gnckvW7Bd9IaQzekzXJvWthCMyi/xVEyGW0RFPytw==
+openid-client@^5.2.1:
+  version "5.4.3"
+  resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-5.4.3.tgz#c75d2f6d07a25d383a72c8ff34605a36b7e2cd73"
+  integrity sha512-sVQOvjsT/sbSfYsQI/9liWQGVZH/Pp3rrtlGEwgk/bbHfrUDZ24DN57lAagIwFtuEu+FM9Ev7r85s8S/yPjimQ==
   dependencies:
-    jose "^4.14.1"
+    jose "^4.14.4"
     lru-cache "^6.0.0"
     object-hash "^2.2.0"
     oidc-token-hash "^5.0.3"
@@ -6675,6 +6718,11 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.2.2, picomatch@^2.3.1:
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
+pidtree@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/pidtree/-/pidtree-0.6.0.tgz#90ad7b6d42d5841e69e0a2419ef38f8883aa057c"
+  integrity sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==
+
 pify@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/pify/-/pify-2.3.0.tgz"
@@ -6811,18 +6859,6 @@ postcss@8.4.24, postcss@^8.4.19, postcss@^8.4.23:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-preact-render-to-string@^5.1.19:
-  version "5.2.6"
-  resolved "https://registry.npmjs.org/preact-render-to-string/-/preact-render-to-string-5.2.6.tgz"
-  integrity sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==
-  dependencies:
-    pretty-format "^3.8.0"
-
-preact@^10.6.3:
-  version "10.15.1"
-  resolved "https://registry.npmjs.org/preact/-/preact-10.15.1.tgz"
-  integrity sha512-qs2ansoQEwzNiV5eAcRT1p1EC/dmEzaATVDJNiB3g2sRDWdA7b7MurXdJjB2+/WQktGWZwxvDrnuRFbWuIr64g==
-
 prebuild-install@^7.1.1:
   version "7.1.1"
   resolved "https://registry.npmjs.org/prebuild-install/-/prebuild-install-7.1.1.tgz"
@@ -6860,11 +6896,6 @@ pretty-bytes@5.6.0:
   version "5.6.0"
   resolved "https://registry.npmjs.org/pretty-bytes/-/pretty-bytes-5.6.0.tgz"
   integrity sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==
-
-pretty-format@^3.8.0:
-  version "3.8.0"
-  resolved "https://registry.npmjs.org/pretty-format/-/pretty-format-3.8.0.tgz"
-  integrity sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==
 
 pretty-ms@7.0.1, pretty-ms@^7.0.1:
   version "7.0.1"
@@ -7255,6 +7286,11 @@ resolve-pkg-maps@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/resolve-pkg-maps/-/resolve-pkg-maps-1.0.0.tgz"
   integrity sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==
+
+resolve.exports@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/resolve.exports/-/resolve.exports-2.0.2.tgz#f8c934b8e6a13f539e38b7098e2e36134f01e800"
+  integrity sha512-X2UW6Nw3n/aMgDVy+0rSqgHlv39WZAlZrXCdnbyEiKm17DSqHX4MmQMaST3FbeWR5FTuRcUwYAziZajji0Y7mg==
 
 resolve@^1.1.7, resolve@^1.14.2, resolve@^1.22.1, resolve@^1.22.2:
   version "1.22.2"
@@ -8278,6 +8314,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+url-join@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/url-join/-/url-join-4.0.1.tgz#b642e21a2646808ffa178c4c5fda39844e12cde7"
+  integrity sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA==
+
 use-sync-external-store@^1.0.0, use-sync-external-store@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz"
@@ -8293,7 +8334,7 @@ utils-merge@1.0.1:
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
-uuid@^8.3.0, uuid@^8.3.2:
+uuid@^8.3.0:
   version "8.3.2"
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
@@ -8318,21 +8359,21 @@ vary@~1.1.2:
   resolved "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vercel@^30.2.2:
-  version "30.2.3"
-  resolved "https://registry.npmjs.org/vercel/-/vercel-30.2.3.tgz"
-  integrity sha512-Eil4CR1a/pZkTl3gewzN8rDTisRmuixHAgymWutrRlc1qBYGPMo9ZPTu/9cR3k2PT7yjeRMYYLm0ax9l43lDhQ==
+vercel@^31.0.1:
+  version "31.0.1"
+  resolved "https://registry.yarnpkg.com/vercel/-/vercel-31.0.1.tgz#18a98bc07bd9380edc04c1254fcd61b7ac3846c9"
+  integrity sha512-Tf6PsIseRtAw/PETRfBdGqnbG/el1g0prwaKCXm6Dq5CcKRoya3ntT2E38fHE9pXIPDqE1XdTn9F1crKm8sKAQ==
   dependencies:
-    "@vercel/build-utils" "6.7.5"
+    "@vercel/build-utils" "6.8.0"
     "@vercel/go" "2.5.1"
     "@vercel/hydrogen" "0.0.64"
-    "@vercel/next" "3.8.6"
-    "@vercel/node" "2.15.2"
+    "@vercel/next" "3.8.8"
+    "@vercel/node" "2.15.3"
     "@vercel/python" "3.1.60"
     "@vercel/redwood" "1.1.15"
-    "@vercel/remix-builder" "1.8.14"
+    "@vercel/remix-builder" "1.8.15"
     "@vercel/ruby" "1.3.76"
-    "@vercel/static-build" "1.3.37"
+    "@vercel/static-build" "1.3.38"
 
 vfile-message@^3.0.0:
   version "3.1.4"

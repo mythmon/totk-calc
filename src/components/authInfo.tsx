@@ -1,7 +1,8 @@
 "use client";
 
 import type { Component } from "@/components/component";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { User } from "@/lib/shared/user";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import cx from "classnames";
 
 export const AuthInfo: Component<{ className: string }> = ({ className }) => {
@@ -15,39 +16,32 @@ export const AuthInfo: Component<{ className: string }> = ({ className }) => {
 export const AuthInfoParts: Component<{ partClassName?: string }> = ({
   partClassName,
 }) => {
-  const { data: session, status } = useSession();
+  const session = useUser();
+  if (session.isLoading) return null;
 
-  if (status === "loading") return null;
-
-  if (status === "authenticated") {
-    if (!session?.user) throw new Error("signed in but no user");
-    return (
+  return User.parseNt(session.user).match(
+    (user) => (
       <>
         <div className={partClassName}>
-          {session.user.image && (
+          {user.picture && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               className="inline mr-2 w-[24px] h-[24px]"
-              src={session.user.image}
-              alt={`Avatar for ${session.user.name}`}
+              src={user.picture}
+              alt={`Avatar for ${user.nickname}`}
             />
           )}
-          {session.user.name}
+          {user.nickname}
         </div>
         <div className={partClassName}>
-          <button onClick={() => signOut()}>Sign out</button>
+          <a href="/api/auth/logout">Sign out</a>
         </div>
       </>
-    );
-  }
-
-  if (status === "unauthenticated") {
-    return (
-      <button className={partClassName} onClick={() => signIn("discord")}>
-        Sign in
-      </button>
-    );
-  }
-
-  throw new Error(`Unexpected auth status ${status}`);
+    ),
+    (_err) => (
+      <a className={partClassName} href="/api/auth/login">
+        Login
+      </a>
+    )
+  );
 };

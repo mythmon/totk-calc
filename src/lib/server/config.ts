@@ -1,5 +1,5 @@
+import "server-only";
 import dotenv from "dotenv";
-import DiscordProvider from "next-auth/providers/discord";
 
 dotenv.config({ path: ".env.local" });
 
@@ -13,13 +13,5 @@ function env(name: string, defaultValue?: string): string {
 }
 
 export const config = {
-  auth: {
-    providers: [
-      DiscordProvider({
-        clientId: env("DISCORD_CLIENT_ID"),
-        clientSecret: env("DISCORD_CLIENT_SECRET"),
-      }),
-    ],
-  },
   env: env("ENV", "dev"),
 };

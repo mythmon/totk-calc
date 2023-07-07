@@ -1,3 +1,4 @@
+import "server-only";
 import { ResultAsync } from "neverthrow";
 import type { NextRequest } from "next/server";
 

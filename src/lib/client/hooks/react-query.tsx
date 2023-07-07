@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import type { ComponentWithChildren } from "@/components/component";
 import {

@@ -11,12 +11,12 @@ import {
   useEffect,
   useMemo,
 } from "react";
-import type { Armor } from "@/lib/totkDb";
+import type { Armor } from "@/lib/server/totkDb";
 import Image from "next/image";
 import { modalActions } from "@/state/slices/modal";
 import { Button } from "../form/Button";
-import { useSet } from "@/lib/hooks/useSet";
-import { useArmorInventoryQuery } from "@/lib/hooks/useArmorInventory";
+import { useSet } from "@/lib/client/hooks/useSet";
+import { useArmorInventoryQuery } from "@/lib/client/hooks/useArmorInventory";
 
 const STAR = "★";
 

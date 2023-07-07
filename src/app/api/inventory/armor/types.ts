@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ArmorField } from "@/lib/userInventory";
-import { znt } from "@/lib/znt";
+import { ArmorField } from "@/lib/shared/armor";
+import { znt } from "@/lib/shared/znt";
 
 export const InventoryArmorRes = znt(
   z.object({

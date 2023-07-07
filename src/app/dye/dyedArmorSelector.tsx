@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import type { Component } from "@/components/component";
-import type { Armor, ArmorListResponse } from "@/lib/totkDb";
+import type { Armor, ArmorListResponse } from "@/lib/server/totkDb";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { hex } from "wcag-contrast";
-import d3 from "@/lib/d3";
+import d3 from "@/lib/shared/d3";
 import { Select } from "@/components/form/Select";
 import Head from "next/head";
 

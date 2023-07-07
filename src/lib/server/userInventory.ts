@@ -2,29 +2,11 @@ import "server-only";
 
 import { userPrefix } from "./kv";
 import { kv } from "@vercel/kv";
-import type { User } from "./auth";
-import { z } from "zod";
-import { zu } from "zod_utilz";
-import { ResultAsync, ok, Result } from "neverthrow";
-import { znt } from "./znt";
+import type { User } from "../shared/user";
+import { ResultAsync } from "neverthrow";
+import { parseAmorField, type ArmorField } from "@/lib/shared/armor";
 
 type InventoryAreas = "armor";
-
-const ArmorFieldV1 = znt(z.number());
-const ArmorFieldV2Inner = z.object({ level: z.number(), dye: z.string() });
-const ArmorFieldV2 = znt(
-  z.union([zu.stringToJSON(), z.record(z.any())]).pipe(ArmorFieldV2Inner)
-);
-
-export const ArmorField = ArmorFieldV2Inner;
-export type ArmorField = z.infer<typeof ArmorField>;
-
-function parseAmorField(data: unknown): Result<ArmorField | null, Error> {
-  if (data === null) return ok(null);
-  return ArmorFieldV2.parseNt(data).orElse(() =>
-    ArmorFieldV1.parseNt(data).map((level) => ({ level, dye: "Base" }))
-  );
-}
 
 export class UserInventory {
   private prefix: string;
