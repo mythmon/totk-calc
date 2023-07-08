@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import cx from "classnames";
 import { Header } from "@/components/header";
-import { QueryClientProvider } from "@/lib/client/hooks/react-query";
 import { StoreProvider } from "@/state/provider";
 import { Modals } from "@/components/modals";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
@@ -25,18 +24,16 @@ export const metadata = {
 const RootLayout: ComponentWithChildren = ({ children }) => {
   return (
     <UserProvider>
-      <QueryClientProvider>
-        <StoreProvider>
-          <html lang="en">
-            <body className={cx(inter.variable, "font-sans")}>
-              <Header />
-              <div className="p-2 md:p-8">{children}</div>
-              <Modals />
-              <Analytics />
-            </body>
-          </html>
-        </StoreProvider>
-      </QueryClientProvider>
+      <StoreProvider>
+        <html lang="en">
+          <body className={cx(inter.variable, "font-sans")}>
+            <Header />
+            <div className="p-2 md:p-8">{children}</div>
+            <Modals />
+            <Analytics />
+          </body>
+        </html>
+      </StoreProvider>
     </UserProvider>
   );
 };

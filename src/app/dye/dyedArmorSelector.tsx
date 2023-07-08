@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { Component } from "@/components/component";
-import type { Armor, ArmorListResponse } from "@/lib/server/totkDb";
+import type { Armor, ArmorListResponse } from "@/lib/shared/armor";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { hex } from "wcag-contrast";
 import d3 from "@/lib/shared/d3";

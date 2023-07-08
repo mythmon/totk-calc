@@ -11,12 +11,15 @@ import {
   useEffect,
   useMemo,
 } from "react";
-import type { Armor } from "@/lib/server/totkDb";
+import type { Armor } from "@/lib/shared/armor";
 import Image from "next/image";
 import { modalActions } from "@/state/slices/modal";
 import { Button } from "@/components/form/Button";
 import { useSet } from "@/lib/client/hooks/useSet";
-import { useArmorInventoryQuery } from "@/lib/client/hooks/useArmorInventory";
+import {
+  useAddArmorToInventoryMutation,
+  useGetArmorInventoryQuery,
+} from "@/state/services/totk";
 
 const STAR = "★";
 
@@ -26,8 +29,8 @@ export const AddArmorModal: Component = () => {
   const [armor, setArmor] = useState<Armor | null>(null);
   const [dye, setDye] = useState<string>("Base");
   const [level, setLevel] = useState<number>(0);
-  const armorInventoryQuery = useArmorInventoryQuery();
-  const [submitting, setSubmitting] = useState(false);
+  const armorInventoryQuery = useGetArmorInventoryQuery();
+  const [addArmorMutation, addArmorResult] = useAddArmorToInventoryMutation();
 
   const { value: invalidReasons, set: setValidation } = useSet<string>();
   const armorOptions = useMemo(() => {
@@ -47,11 +50,17 @@ export const AddArmorModal: Component = () => {
     setValidation("inventory-loading", armorInventoryQuery.isLoading);
     setValidation(
       "already-have",
-      armorInventoryQuery.isFetched &&
+      armorInventoryQuery.isSuccess &&
         !!armor &&
         Object.hasOwn(armorInventoryQuery.data!.armor, armor?.actorName)
     );
   }, [armor, dye, invalidReasons, level, setValidation, armorInventoryQuery]);
+
+  useEffect(() => {
+    if (addArmorResult.isSuccess) {
+      dispatch(modalActions.closeModal());
+    }
+  }, [addArmorResult.isSuccess, dispatch]);
 
   const handleArmorChange = useCallback(
     (ev: ChangeEvent<HTMLSelectElement>) => {
@@ -76,19 +85,9 @@ export const AddArmorModal: Component = () => {
     async (ev: SyntheticEvent) => {
       ev.preventDefault();
       if (invalidReasons.size > 0 || !armor) return;
-      setSubmitting(true);
-      try {
-        await armorInventoryQuery.mutate({
-          armor: {
-            [armor.actorName]: { level, dye },
-          },
-        });
-        dispatch(modalActions.closeModal());
-      } finally {
-        setSubmitting(false);
-      }
+      addArmorMutation({ actorName: armor.actorName, level, dye });
     },
-    [armor, armorInventoryQuery, dye, invalidReasons.size, level, dispatch]
+    [invalidReasons.size, armor, addArmorMutation, level, dye]
   );
 
   return (
@@ -182,7 +181,7 @@ export const AddArmorModal: Component = () => {
                 flavor="primary"
                 onClick={handleSubmit}
                 disabled={invalidReasons.size > 0}
-                submitting={submitting}
+                submitting={addArmorResult.isLoading}
               >
                 Done
               </Button>

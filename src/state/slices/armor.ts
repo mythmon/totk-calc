@@ -1,6 +1,6 @@
-import type { Armor } from "@/lib/server/totkDb";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { useAppSelector } from "@/state/hooks";
+import type { Armor } from "@/lib/shared/armor";
 
 export type ArmorState = {
   list:

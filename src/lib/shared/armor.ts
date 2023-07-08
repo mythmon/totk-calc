@@ -3,6 +3,31 @@ import { zu } from "zod_utilz";
 import { ok, Result } from "neverthrow";
 import { znt } from "@/lib/shared/znt";
 
+export interface Armor {
+  actorName: string;
+  belongingSet: string | null;
+  buyPriceRupees: number | null;
+  buyPricePoes: number | null;
+  defenses: number[];
+  enName: string;
+  hasUpgrades: boolean;
+  colors: string[];
+  iconUrls: Record<string, string>;
+  sellingPrices: number[];
+  setEnName: string | null;
+  slot: "head" | "upper" | "lower" | "all";
+  upgrades: null | UpgradeIngredient[][];
+}
+
+export interface UpgradeIngredient {
+  material: string;
+  quantity: number;
+}
+
+export interface ArmorListResponse {
+  armors: Armor[];
+}
+
 const ArmorFieldV1 = znt(z.number());
 const ArmorFieldV2Inner = z.object({ level: z.number(), dye: z.string() });
 const ArmorFieldV2 = znt(
