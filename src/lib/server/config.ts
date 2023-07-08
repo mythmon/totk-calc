@@ -20,6 +20,10 @@ export function getConfig() {
 }
 
 export function prepEnv() {
-  process.env["AUTH0_BASE_URL"] ||= process.env["VERCEL_URL"];
-  process.env["NEXT_PUBLIC_AUTH0_BASE_URL"] ||= process.env["AUTH0_BASE_URL"];
+  if (!process.env["AUTH0_BASE_URL"] && process.env["VERCEL_URL"]) {
+    process.env["AUTH0_BASE_URL"] = process.env["VERCEL_URL"];
+  }
+  if (!process.env["NEXT_PUBLIC_AUTH0_BASE_URL"]) {
+    process.env["NEXT_PUBLIC_AUTH0_BASE_URL"] = process.env["AUTH0_BASE_URL"];
+  }
 }
