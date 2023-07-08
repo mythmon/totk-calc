@@ -8,6 +8,9 @@ import { QueryClientProvider } from "@/lib/client/hooks/react-query";
 import { StoreProvider } from "@/state/provider";
 import { Modals } from "@/components/modals";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
+import { prepEnv } from "@/lib/server/config";
+
+prepEnv();
 
 const inter = Inter({
   subsets: ["latin"],
