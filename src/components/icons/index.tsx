@@ -1,5 +1,5 @@
 import type { SVGProps } from "react";
-import type { Component } from "../component";
+import type { Component } from "@/components/component";
 
 /* Icon is the function component type for SVG icons. It takes an optional
  * extra type like Icon<{title: string}> which adds "title" to the props

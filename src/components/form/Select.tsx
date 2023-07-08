@@ -1,4 +1,4 @@
-import type { ComponentWithChildren } from "../component";
+import type { ComponentWithChildren } from "@/components/component";
 import cx from "classnames";
 import { type ChangeEvent, type HTMLProps } from "react";
 

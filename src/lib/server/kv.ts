@@ -1,6 +1,6 @@
 import "server-only";
 import { createHash } from "node:crypto";
-import type { User } from "../shared/user";
+import type { User } from "@/lib//shared/user";
 
 export function userPrefix(user: User) {
   const hash = createHash("sha256");

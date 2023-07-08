@@ -2,7 +2,7 @@ import "server-only";
 
 import { userPrefix } from "./kv";
 import { kv } from "@vercel/kv";
-import type { User } from "../shared/user";
+import type { User } from "@/lib/shared/user";
 import { ResultAsync } from "neverthrow";
 import { parseAmorField, type ArmorField } from "@/lib/shared/armor";
 

@@ -1,7 +1,7 @@
 "use client";
 import type { Component } from "@/components/component";
 import { useAppDispatch } from "@/state/hooks";
-import { Select } from "../form/Select";
+import { Select } from "@/components/form/Select";
 import { useArmorList } from "@/state/slices/armor";
 import {
   useState,
@@ -14,7 +14,7 @@ import {
 import type { Armor } from "@/lib/server/totkDb";
 import Image from "next/image";
 import { modalActions } from "@/state/slices/modal";
-import { Button } from "../form/Button";
+import { Button } from "@/components/form/Button";
 import { useSet } from "@/lib/client/hooks/useSet";
 import { useArmorInventoryQuery } from "@/lib/client/hooks/useArmorInventory";
 

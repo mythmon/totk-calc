@@ -4,7 +4,7 @@ import path from "node:path";
 import * as excelJs from "exceljs";
 import type { Workbook } from "exceljs";
 import fetch from "node-fetch";
-import { Armor, UpgradeIngredient } from "../../src/lib/totkDb";
+import { Armor, UpgradeIngredient } from "@/lib/server/totkDb";
 import z, { RefinementCtx, ZodSchema, ZodTypeDef } from "zod";
 
 const STAR = "★";

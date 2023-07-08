@@ -6,7 +6,7 @@ import { ArmorIcon, RupeeIcon } from "@/components/icons";
 import d3 from "@/lib/shared/d3";
 import cx from "classnames";
 import { type Armor, type ArmorListResponse } from "@/lib/server/totkDb";
-import { InventoryArmorRes } from "../api/inventory/armor/types";
+import { InventoryArmorRes } from "@/app/api/inventory/armor/types";
 import { ArmorLevelManager } from "@/components/armorLevelManager";
 import { useGetPatchQuery } from "@/lib/client/hooks/react-query";
 import type { ArmorField } from "@/lib/shared/armor";

@@ -7,7 +7,7 @@
   "compilerOptions": {
     "lib": ["ES2021.String"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["../src/*"]
     },
     "outDir": "../build"
   },
