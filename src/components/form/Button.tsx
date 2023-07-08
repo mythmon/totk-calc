@@ -13,9 +13,9 @@ export const Button: ComponentWithChildren<
   return (
     <button
       className={cx(
-        "py-1 px-2 mx-1 border bg-slate-200",
-        { "bg-blue-600 text-white": flavor === "primary" },
-        { "opacity-30 cursor-not-allowed": disabled },
+        "py-1 px-2 mx-1 border",
+        flavor == "primary" ? "bg-blue-600 text-white" : "bg-slate-200",
+        disabled ? "opacity-60 cursor-not-allowed" : "",
         className
       )}
       disabled={disabled || submitting}
