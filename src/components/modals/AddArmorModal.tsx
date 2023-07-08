@@ -1,5 +1,4 @@
 "use client";
-import type { Component } from "@/components/component";
 import { useAppDispatch } from "@/state/hooks";
 import { Select } from "@/components/form/Select";
 import { useArmorList } from "@/state/slices/armor";
@@ -17,9 +16,10 @@ import { modalActions } from "@/state/slices/modal";
 import { Button } from "@/components/form/Button";
 import { useSet } from "@/lib/client/hooks/useSet";
 import {
-  useAddArmorToInventoryMutation,
+  usePatchArmorInventoryMutation,
   useGetArmorInventoryQuery,
 } from "@/state/services/totk";
+import type { Component } from "@/components/component";
 
 const STAR = "★";
 
@@ -30,7 +30,7 @@ export const AddArmorModal: Component = () => {
   const [dye, setDye] = useState<string>("Base");
   const [level, setLevel] = useState<number>(0);
   const armorInventoryQuery = useGetArmorInventoryQuery();
-  const [addArmorMutation, addArmorResult] = useAddArmorToInventoryMutation();
+  const [addArmorMutation, addArmorResult] = usePatchArmorInventoryMutation();
 
   const { value: invalidReasons, set: setValidation } = useSet<string>();
   const armorOptions = useMemo(() => {
@@ -58,7 +58,7 @@ export const AddArmorModal: Component = () => {
 
   useEffect(() => {
     if (addArmorResult.isSuccess) {
-      dispatch(modalActions.closeModal());
+      dispatch(modalActions.close());
     }
   }, [addArmorResult.isSuccess, dispatch]);
 
@@ -107,9 +107,7 @@ export const AddArmorModal: Component = () => {
         >
           <div className="mb-3 border-b flex" style={{ gridArea: "title" }}>
             <h1 className="text-xl font-bold inline grow">Add an armor</h1>
-            <button onClick={() => dispatch(modalActions.closeModal())}>
-              x
-            </button>
+            <button onClick={() => dispatch(modalActions.close())}>x</button>
           </div>
           <div style={{ gridArea: "image" }}>
             {armor?.iconUrls?.[dye] ? (

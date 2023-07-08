@@ -10,17 +10,34 @@ import { useEffect } from "react";
 import { armorActions } from "@/state/slices/armor";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useGetArmorInventoryQuery } from "@/state/services/totk";
+import Link from "next/link";
+import type { ArmorListQuery } from "./page";
 
 interface ArmorListClientProps {
   armorList: ArmorListResponse;
+  query: ArmorListQuery;
 }
 
 export const ArmorListClient: Component<ArmorListClientProps> = ({
   armorList,
+  query,
 }) => {
   const session = useUser();
-
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (query.armor) {
+      dispatch(
+        modalActions.show({
+          modal: "edit-armor",
+          id: query.armor,
+        })
+      );
+    } else {
+      dispatch(modalActions.close());
+    }
+  }, [dispatch, query]);
+
   useEffect(() => {
     dispatch(armorActions.setList(armorList.armors));
   }, [dispatch, armorList]);
@@ -57,7 +74,9 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
       <div className="mb-4">
         <p>
           You&apos;ve collected {collectedArmors.length} armor pieces.
-          <Button onClick={() => dispatch(modalActions.showModal("add-armor"))}>
+          <Button
+            onClick={() => dispatch(modalActions.show({ modal: "add-armor" }))}
+          >
             Add another
           </Button>
         </p>
@@ -77,21 +96,23 @@ interface ArmorCardProps {
 
 const ArmorCard: Component<ArmorCardProps> = ({ armor }) => {
   return (
-    <div className="bg-gray-200 rounded-lg p-2 pb-3 flex flex-col">
-      <h2 className="font-bold text-center">
-        {armor.enName ?? armor.actorName}
-      </h2>
-      <div className="flex-grow min-h-[0.5rem]" />
-      {armor.setEnName && (
-        <h3 className="text-center italic">{armor.setEnName}</h3>
-      )}
-      <Image
-        className="m-auto"
-        width={128}
-        height={128}
-        alt={armor.enName}
-        src={armor.iconUrls["Base"]!}
-      />
-    </div>
+    <Link href={`?armor=${armor.actorName}`}>
+      <div className="bg-gray-200 rounded-lg p-2 pb-3 flex flex-col">
+        <h2 className="font-bold text-center">
+          {armor.enName ?? armor.actorName}
+        </h2>
+        {armor.setEnName && (
+          <h3 className="text-center italic">{armor.setEnName}</h3>
+        )}
+        <div className="flex-grow min-h-[0.5rem]" />
+        <Image
+          className="m-auto"
+          width={128}
+          height={128}
+          alt={armor.enName}
+          src={armor.iconUrls["Base"]!}
+        />
+      </div>
+    </Link>
   );
 };

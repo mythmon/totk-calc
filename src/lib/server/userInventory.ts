@@ -3,8 +3,11 @@ import "server-only";
 import { userPrefix } from "./kv";
 import { kv } from "@vercel/kv";
 import type { User } from "@/lib/shared/user";
-import { ResultAsync } from "neverthrow";
-import { parseAmorField, type ArmorField } from "@/lib/shared/armor";
+import { Result, ResultAsync } from "neverthrow";
+import {
+  parseAmorField as parseArmorField,
+  type ArmorField,
+} from "@/lib/shared/armor";
 
 type InventoryAreas = "armor";
 
@@ -63,19 +66,24 @@ export class UserInventory {
     return ResultAsync.fromPromise(
       kv.hget(this.key("armor"), actorName),
       (e) => e as Error
-    ).andThen(parseAmorField);
+    ).andThen(parseArmorField);
   }
 
   getAllArmor(): ResultAsync<Record<string, ArmorField>, Error> {
     return ResultAsync.fromPromise(
       kv.hgetall(this.key("armor")),
       (e) => e as Error
-    ).map<Record<string, ArmorField>>((records) =>
-      Object.fromEntries(
-        Object.entries(records ?? {})
-          .map(([k, v]) => [k, parseAmorField(v)])
-          .filter(([_k, v]) => v !== null)
-      )
+    ).andThen<ResultAsync<Record<string, ArmorField>, Error>>((records) =>
+      Result.combine(
+        Object.entries(records ?? {}).flatMap(([k, v]) =>
+          parseArmorField(v).map((parsed) =>
+            parsed === null ? [] : ([k, parsed] as const)
+          )
+        )
+      ).asyncMap(async (ds) => {
+        console.log(ds);
+        return Object.fromEntries(ds.filter(([_k, v]) => v !== null));
+      })
     );
   }
 }

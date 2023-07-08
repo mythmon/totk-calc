@@ -11,7 +11,8 @@ export const totkApi = createApi({
       query: () => `inventory/armor`,
       providesTags: ["InventoryArmor"],
     }),
-    addArmorToInventory: builder.mutation<
+
+    patchArmorInventory: builder.mutation<
       InventoryArmorRes,
       { actorName: Armor["actorName"] } & ArmorField
     >({
@@ -22,23 +23,74 @@ export const totkApi = createApi({
           armor: { [actorName]: armorField },
         } satisfies InventoryArmorRes,
       }),
-      onQueryStarted: async (_props, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (props, { dispatch, queryFulfilled }) => {
+        const optimistic = dispatch(
+          totkApi.util.updateQueryData(
+            "getArmorInventory",
+            undefined,
+            (draft) => {
+              draft.armor[props.actorName] = {
+                level: props.level,
+                dye: props.dye,
+              };
+            }
+          )
+        );
+
         try {
           const { data } = await queryFulfilled;
           dispatch(
             totkApi.util.updateQueryData(
               "getArmorInventory",
               undefined,
-              (draft) => {
-                Object.assign(draft, data);
-              }
+              () => data
             )
           );
-        } catch {}
+        } catch {
+          optimistic.undo();
+        }
+      },
+    }),
+
+    removeArmorInventory: builder.mutation<
+      InventoryArmorRes,
+      Armor["actorName"]
+    >({
+      query: (actorName) => ({
+        url: `inventory/armor`,
+        method: "PATCH",
+        body: { armor: { [actorName]: null } } satisfies InventoryArmorRes,
+      }),
+      onQueryStarted: async (actorName, { dispatch, queryFulfilled }) => {
+        const optimistic = dispatch(
+          totkApi.util.updateQueryData(
+            "getArmorInventory",
+            undefined,
+            (draft) => {
+              delete draft.armor[actorName];
+            }
+          )
+        );
+
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            totkApi.util.updateQueryData(
+              "getArmorInventory",
+              undefined,
+              () => data
+            )
+          );
+        } catch {
+          optimistic.undo();
+        }
       },
     }),
   }),
 });
 
-export const { useGetArmorInventoryQuery, useAddArmorToInventoryMutation } =
-  totkApi;
+export const {
+  useGetArmorInventoryQuery,
+  usePatchArmorInventoryMutation,
+  useRemoveArmorInventoryMutation,
+} = totkApi;

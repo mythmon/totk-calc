@@ -1,29 +1,50 @@
+import type { Component } from "@/components/component";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { useAppSelector } from "../hooks";
 
-export type ModalState = NoModal | AddArmorModal;
+export type ModalState = {
+  name: null | ModalSpec["modal"];
+  props: null | Omit<ModalSpec, "modal">;
+};
 
-interface NoModal {
-  modal: "none";
-}
+export type ModalSpec = AddArmorModal | EditArmorModal;
 
-interface AddArmorModal {
+export type ModalComponent<T extends ModalSpec> = Component<T>;
+
+export interface AddArmorModal {
   modal: "add-armor";
 }
 
-const initialState: ModalState = { modal: "none" };
+export interface EditArmorModal {
+  modal: "edit-armor";
+  id: string;
+}
+
+export function useModalProps<T extends ModalSpec>(name: T["modal"]): T {
+  const modalState = useAppSelector((state) => state.modal);
+  if (modalState.name !== name) {
+    throw new Error("invalid modal state");
+  }
+  return {
+    modal: modalState.name,
+    ...modalState.props,
+  } as T;
+}
+
+const initialState: ModalState = { name: null, props: null };
 
 export const modalSlice = createSlice({
   name: "modal",
   initialState: initialState as ModalState,
   reducers: {
-    closeModal: (state) => {
-      state.modal = "none";
+    close: (state) => {
+      state.name = null;
+      state.props = null;
     },
-    showModal: (
-      state,
-      action: PayloadAction<Exclude<ModalState["modal"], NoModal["modal"]>>
-    ) => {
-      state.modal = action.payload;
+    show: (state, action: PayloadAction<ModalSpec>) => {
+      const { modal, ...props } = action.payload;
+      state.name = modal;
+      state.props = props;
     },
   },
 });
