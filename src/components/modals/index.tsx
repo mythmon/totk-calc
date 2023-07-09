@@ -26,8 +26,8 @@ export const Modals: Component = () => {
 
   return (
     <>
-      <div className="absolute left-0 right-0 top-0 bottom-0 opacity-80 bg-slate-600 z-10" />
-      <div className="absolute left-0 right-0 top-0 bottom-0 z-20 p-8">
+      <div className="fixed left-0 right-0 top-0 bottom-0 opacity-80 bg-slate-600 z-10" />
+      <div className="fixed left-0 right-0 top-0 bottom-0 z-20 p-8">
         <div className="mx-auto max-w-2xl bg-white shadow">
           <Modal />
         </div>

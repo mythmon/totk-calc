@@ -80,10 +80,9 @@ export class UserInventory {
             parsed === null ? [] : ([k, parsed] as const)
           )
         )
-      ).asyncMap(async (ds) => {
-        console.log(ds);
-        return Object.fromEntries(ds.filter(([_k, v]) => v !== null));
-      })
+      ).asyncMap(async (ds) =>
+        Object.fromEntries(ds.filter(([_k, v]) => v !== null))
+      )
     );
   }
 }

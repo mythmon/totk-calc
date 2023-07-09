@@ -48,7 +48,7 @@ export const EditArmorModal: Component = () => {
   const handleClose = useCallback(() => {
     let newUrl = new URL(window.location.href);
     newUrl.searchParams.delete("armor");
-    router.replace(newUrl.toString());
+    router.replace(newUrl.toString(), { scroll: false });
     dispatch(modalActions.close());
   }, [dispatch, router]);
 
