@@ -81,7 +81,7 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
           </Button>
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {collectedArmors.map((armor) => (
           <ArmorCard key={armor.actorName} armor={armor} />
         ))}
@@ -97,7 +97,7 @@ interface ArmorCardProps {
 const ArmorCard: Component<ArmorCardProps> = ({ armor }) => {
   return (
     <Link href={`?armor=${armor.actorName}`} scroll={false}>
-      <div className="bg-gray-200 rounded-lg p-2 pb-3 flex flex-col">
+      <div className="bg-gray-200 rounded-lg p-2 pb-3 flex flex-col h-56">
         <h2 className="font-bold text-center">
           {armor.enName ?? armor.actorName}
         </h2>
