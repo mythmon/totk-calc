@@ -37,7 +37,7 @@ export const modalSlice = createSlice({
   name: "modal",
   initialState: initialState as ModalState,
   reducers: {
-    close: (state) => {
+    close: (state, _action: PayloadAction<string>) => {
       state.name = null;
       state.props = null;
     },

@@ -26,6 +26,7 @@ interface NavLink {
 
 export const navLinks: NavLink[] = [
   { href: "/armor", text: "Armor", Icon: ArmorIcon },
+  { href: "/upgrades", text: "Upgrades", Icon: ArmorIcon },
   { href: "/dye", text: "Dye", Icon: DyeIcon },
 ];
 

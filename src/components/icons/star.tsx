@@ -2,7 +2,7 @@ import type { Icon } from ".";
 
 export const StarIcon: Icon = ({
   width = 48,
-  height = 48,
+  height = width,
   fill = "currentcolor",
   ...props
 }) => (

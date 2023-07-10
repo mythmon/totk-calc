@@ -21,15 +21,18 @@ import { TrashIcon } from "../icons/trash";
 import { useRouter } from "next/navigation";
 
 export const EditArmorModal: Component = () => {
-  const session = useUser();
   const dispatch = useAppDispatch();
   const props = useModalProps<EditArmorModalProps>("edit-armor");
-  const armor = useAppSelector((state) => {
-    const list = state.armor.list;
-    if (list.status === "loaded")
-      return list.armors.find((a) => a.actorName === props.id);
-    return null;
-  });
+  const armors = useAppSelector((state) =>
+    state.armor.list.status === "loaded" ? state.armor.list.armors : []
+  );
+  const armor = armors?.find((a) => a.actorName === props.id);
+  // const armor = useAppSelector((state) => {
+  //   const list = state.armor.list;
+  //   if (list.status === "loaded")
+  //     return list.armors.find((a) => a.actorName === props.id);
+  //   return null;
+  // });
   const armorInventoryQuery = useGetArmorInventoryQuery();
   const [editArmorMutation] = usePatchArmorInventoryMutation();
   const [removeArmorMutation] = useRemoveArmorInventoryMutation();
@@ -39,23 +42,28 @@ export const EditArmorModal: Component = () => {
     ? armorInventoryQuery.data?.armor[armor.actorName]
     : null;
 
-  useEffect(() => {
-    if (!armor || (armorInventoryQuery.isSuccess && !inventory)) {
-      dispatch(modalActions.close());
-    }
-  }, [armor, armorInventoryQuery.isSuccess, dispatch, inventory]);
+  const handleClose = useCallback(
+    (reason: string) => {
+      let newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("armor");
+      router.replace(newUrl.toString(), { scroll: false });
+      dispatch(modalActions.close(reason));
+    },
+    [dispatch, router]
+  );
 
-  const handleClose = useCallback(() => {
-    let newUrl = new URL(window.location.href);
-    newUrl.searchParams.delete("armor");
-    router.replace(newUrl.toString(), { scroll: false });
-    dispatch(modalActions.close());
-  }, [dispatch, router]);
-
-  if (!session.isLoading && !session.user) throw new Error("unauthenticated");
-
-  if (!armor || !inventory) {
-    return null;
+  if (!armor) {
+    return (
+      <div className="p-9">
+        Armor {props.id} not found
+        <pre>
+          <code>{JSON.stringify(armors, null, 2)}</code>
+        </pre>
+      </div>
+    );
+  }
+  if (!inventory) {
+    return <div className="p-9">No inventory found</div>;
   }
 
   return (
@@ -71,7 +79,7 @@ export const EditArmorModal: Component = () => {
         }}
       >
         <div className="text-end" style={{ gridArea: "close" }}>
-          <button className="p-4" onClick={handleClose}>
+          <button className="p-4" onClick={() => handleClose("close button")}>
             X
           </button>
         </div>
@@ -142,7 +150,7 @@ export const EditArmorModal: Component = () => {
             className="absolute bottom-0 right-0"
             onClick={() => {
               removeArmorMutation(armor.actorName);
-              handleClose();
+              handleClose("trashed");
             }}
           >
             <TrashIcon />

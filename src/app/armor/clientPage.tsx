@@ -34,7 +34,7 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
         })
       );
     } else {
-      dispatch(modalActions.close());
+      dispatch(modalActions.close("no armor selected"));
     }
   }, [dispatch, query]);
 
