@@ -34,13 +34,17 @@ export const AddArmorModal: Component = () => {
 
   const { value: invalidReasons, set: setValidation } = useSet<string>();
   const armorOptions = useMemo(() => {
+    const inventory = armorInventoryQuery.data;
+    if (!inventory) return [];
     if (armorList.status === "loaded") {
-      const rv = [...armorList.armors];
+      const rv = armorList.armors.filter(
+        (a) => !Object.hasOwn(inventory, a.actorName)
+      );
       rv.sort((a, b) => a.enName.localeCompare(b.enName));
       return rv;
     }
     return [];
-  }, [armorList]);
+  }, [armorInventoryQuery.data, armorList]);
 
   useEffect(() => {
     setValidation("no-armor", !armor);
@@ -189,15 +193,6 @@ export const AddArmorModal: Component = () => {
               </Button>
             </div>
           </form>
-
-          <div
-            style={{ gridArea: "errors" }}
-            className="min-h-[1rem] text-rose-600"
-          >
-            {invalidReasons.has("already-have") && (
-              <>You are already tracking that armor piece.</>
-            )}
-          </div>
         </div>
       ) : null}
     </div>
