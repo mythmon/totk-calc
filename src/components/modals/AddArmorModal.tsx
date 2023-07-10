@@ -38,7 +38,7 @@ export const AddArmorModal: Component = () => {
     if (!inventory) return [];
     if (armorList.status === "loaded") {
       const rv = armorList.armors.filter(
-        (a) => !Object.hasOwn(inventory, a.actorName)
+        (a) => !Object.hasOwn(inventory.armor, a.actorName)
       );
       rv.sort((a, b) => a.enName.localeCompare(b.enName));
       return rv;
