@@ -58,7 +58,7 @@ export const AddArmorModal: Component = () => {
 
   useEffect(() => {
     if (addArmorResult.isSuccess) {
-      dispatch(modalActions.close());
+      dispatch(modalActions.close("added armor"));
     }
   }, [addArmorResult.isSuccess, dispatch]);
 
@@ -107,7 +107,11 @@ export const AddArmorModal: Component = () => {
         >
           <div className="mb-3 border-b flex" style={{ gridArea: "title" }}>
             <h1 className="text-xl font-bold inline grow">Add an armor</h1>
-            <button onClick={() => dispatch(modalActions.close())}>x</button>
+            <button
+              onClick={() => dispatch(modalActions.close("close button"))}
+            >
+              x
+            </button>
           </div>
           <div style={{ gridArea: "image" }}>
             {armor?.iconUrls?.[dye] ? (

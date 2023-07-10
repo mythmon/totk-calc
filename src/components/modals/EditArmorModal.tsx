@@ -10,8 +10,7 @@ import {
   useModalProps,
   modalActions,
 } from "@/state/slices/modal";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import Image from "next/image";
 import type { Armor } from "@/lib/shared/armor";
 import { CheckIcon } from "../icons/check";
@@ -23,16 +22,12 @@ import { useRouter } from "next/navigation";
 export const EditArmorModal: Component = () => {
   const dispatch = useAppDispatch();
   const props = useModalProps<EditArmorModalProps>("edit-armor");
-  const armors = useAppSelector((state) =>
-    state.armor.list.status === "loaded" ? state.armor.list.armors : []
-  );
-  const armor = armors?.find((a) => a.actorName === props.id);
-  // const armor = useAppSelector((state) => {
-  //   const list = state.armor.list;
-  //   if (list.status === "loaded")
-  //     return list.armors.find((a) => a.actorName === props.id);
-  //   return null;
-  // });
+  const armor = useAppSelector((state) => {
+    const list = state.armor.list;
+    if (list.status === "loaded")
+      return list.armors.find((a) => a.actorName === props.id);
+    return null;
+  });
   const armorInventoryQuery = useGetArmorInventoryQuery();
   const [editArmorMutation] = usePatchArmorInventoryMutation();
   const [removeArmorMutation] = useRemoveArmorInventoryMutation();
@@ -53,14 +48,7 @@ export const EditArmorModal: Component = () => {
   );
 
   if (!armor) {
-    return (
-      <div className="p-9">
-        Armor {props.id} not found
-        <pre>
-          <code>{JSON.stringify(armors, null, 2)}</code>
-        </pre>
-      </div>
-    );
+    return <div className="p-9">Armor {props.id} not found</div>;
   }
   if (!inventory) {
     return <div className="p-9">No inventory found</div>;
