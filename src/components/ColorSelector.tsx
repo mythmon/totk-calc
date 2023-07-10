@@ -22,16 +22,18 @@ export const ColorSelector: Component<ColorSelectorProps> = ({
     Black: "#000000",
     Purple: "#8800ff",
     Green: "#00aa00",
+    "Light Blue": "#8888ff",
     Navy: "#000088",
     Orange: "#ff8800",
     Peach: "#ffaaaa",
     Crimson: "#880000",
+    "Light Yellow": "#ffff88",
     Brown: "#aa4400",
     Gray: "#444444",
   };
 
   return (
-    <div className="grid grid-cols-7 gap-2 w-full">
+    <div className="grid grid-cols-8 gap-2 w-full">
       {colors.map((color) => {
         const cssColor = colorMap[color] ?? "#000000";
         const checkColor = betterContrast(cssColor, ["#ffffff", "#000000"]);

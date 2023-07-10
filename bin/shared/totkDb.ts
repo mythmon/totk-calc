@@ -235,7 +235,7 @@ export class ArmorData implements Armor {
         ])
         .filter(([_name, url]) => url !== null)
         .flatMap(([name, _url]) => {
-          const match = name.match(/Inventory Icon \((?<color>\w+)\)/);
+          const match = name.match(/Inventory Icon \((?<color>[^)]+)\)/);
           if (match) return [match.groups!["color"]!];
           return [];
         }),
