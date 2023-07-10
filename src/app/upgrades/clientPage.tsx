@@ -90,6 +90,8 @@ export const UpgradesClient: Component<UpgradesClientProps> = ({
     ...data,
   }));
 
+  materialData.sort((a, b) => a.material.localeCompare(b.material));
+
   return (
     <>
       <table className="w-full max-w-2xl">
