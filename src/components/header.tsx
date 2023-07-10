@@ -2,7 +2,8 @@ import { AuthInfo } from "@/components/authInfo";
 import type { Component } from "@/components/component";
 import Link from "next/link";
 import { NavMenu } from "./navMenu";
-import { ArmorIcon, DyeIcon, type Icon } from "./icons";
+import { ArmorIcon, DyeIcon, type Icon, type IconBaseProps } from "./icons";
+import { StarIcon } from "./icons/star";
 
 export const Header: Component = () => {
   return (
@@ -26,7 +27,13 @@ interface NavLink {
 
 export const navLinks: NavLink[] = [
   { href: "/armor", text: "Armor", Icon: ArmorIcon },
-  { href: "/upgrades", text: "Upgrades", Icon: ArmorIcon },
+  {
+    href: "/upgrades",
+    text: "Upgrades",
+    Icon: (props: IconBaseProps) => (
+      <StarIcon stroke="white" fill="none" {...props} />
+    ),
+  },
   { href: "/dye", text: "Dye", Icon: DyeIcon },
 ];
 

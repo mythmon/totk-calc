@@ -38,4 +38,6 @@ next-env.d.ts
 cache
 public/images/armor/*.avif
 public/data/armors.json
+public/images/materials/*.avif
+public/data/materials.json
 totk-db.xlsx

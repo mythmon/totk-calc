@@ -1,9 +1,9 @@
 import type { Icon } from ".";
 
-export const GearIcon: Icon = ({ width = 48, height = width, ...props }) => (
+export const GearIcon: Icon = ({ size = 32, ...props }) => (
   <svg
-    width={width}
-    height={height}
+    width={size}
+    height={size}
     viewBox="-0.5 0 49 49"
     fill="currentcolor"
     {...props}

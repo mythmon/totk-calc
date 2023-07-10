@@ -1,4 +1,3 @@
-"use client";
 import type { Component } from "@/components/component";
 import { hex } from "wcag-contrast";
 import d3 from "@/lib/shared/d3";

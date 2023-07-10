@@ -5,6 +5,7 @@ import * as excelJs from "exceljs";
 import type { Workbook } from "exceljs";
 import fetch from "node-fetch";
 import { Armor, UpgradeIngredient } from "@/lib/shared/armor";
+import { Material } from "@/lib/shared/material";
 import z, { RefinementCtx, ZodSchema, ZodTypeDef } from "zod";
 
 const STAR = "★";
@@ -93,6 +94,12 @@ export async function loadArmorData(): Promise<ArmorData[]> {
     );
 
   return armors;
+}
+
+export async function loadMaterialData(): Promise<MaterialData[]> {
+  const workbook = await loadWorkbook();
+  const materialSheet = new SheetHelper(workbook.getWorksheet("Materials"));
+  return materialSheet.getRows().map((row) => new MaterialData(row));
 }
 
 class SheetHelper {
@@ -363,6 +370,57 @@ export class ArmorData implements Armor {
 
     if (!upgrades.length) return null;
     return upgrades;
+  }
+}
+
+export class MaterialData implements Material {
+  constructor(private row: SheetRowHelper) {}
+
+  toJSON(): Material {
+    const keys: (keyof Material)[] = [
+      "actorName",
+      "iconUrl",
+      "name",
+      "sortKeys",
+    ];
+    return Object.fromEntries(
+      keys.map((key) => [key, this[key]])
+    ) as unknown as Material;
+  }
+
+  get name(): string {
+    return this.row.getField("Name", z.string());
+  }
+
+  get actorName(): string {
+    return this.row.getField("ActorName", z.string());
+  }
+
+  get sortKeys(): { type: number } {
+    return { type: this.row.getField("Inventory Order (By type)", z.number()) };
+  }
+
+  get iconUrl(): string {
+    return `/images/material/${this.actorName}.avif`;
+  }
+
+  private _getIconDownloadUrl(): string | null {
+    const result = this.row.getField(`Inventory Icon`, zImageFromFormula);
+    return result?.formula ?? null;
+  }
+
+  hasIcon(): boolean {
+    return this._getIconDownloadUrl() !== null;
+  }
+
+  async getIconBuffer(): Promise<ArrayBuffer | null> {
+    const iconUrl = this._getIconDownloadUrl();
+    if (iconUrl) {
+      const res = await fetch(iconUrl);
+      if (res.ok) return res.arrayBuffer();
+      throw new Error(await res.text());
+    }
+    return null;
   }
 }
 

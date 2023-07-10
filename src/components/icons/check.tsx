@@ -1,13 +1,12 @@
 import type { Icon } from ".";
 
 export const CheckIcon: Icon = ({
-  width = 32,
-  height = width,
+  size = 32,
   fill = "currentcolor",
   stroke = "black",
   ...props
 }) => (
-  <svg width={width} height={height} viewBox="0 0 32 32" fill="none" {...props}>
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" {...props}>
     <path d="M7 10L13 16L25 4L31 10L13 28L1 16L7 10Z" fill={fill} />
     <path
       fillRule="evenodd"

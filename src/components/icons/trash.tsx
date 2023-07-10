@@ -1,7 +1,7 @@
 import type { Icon } from ".";
 
-export const TrashIcon: Icon = ({ width = 32, height = 32, ...props }) => (
-  <svg width={width} height={height} viewBox="0 0 32 32" fill="none" {...props}>
+export const TrashIcon: Icon = ({ size = 32, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" {...props}>
     <path
       d="M7 6.2439H13.5455M25 6.2439C22.2308 6.2439 19 6.2439 19 6.2439M13.5455 6.2439V4H19V6.2439M13.5455 6.2439H19M7 7.92683H25L23.9091 27H8.09091L7 7.92683Z"
       stroke="currentcolor"
