@@ -10,13 +10,17 @@ import { useAppDispatch } from "@/state/hooks";
 import { modalActions } from "@/state/slices/modal";
 import { armorActions } from "@/state/slices/armor";
 import { useEffect } from "react";
+import type { UpgradeQuery } from "./page";
+import Link from "next/link";
 
 interface UpgradesClientProps {
   armorList: ArmorListResponse;
+  query: UpgradeQuery;
 }
 
 export const UpgradesClient: Component<UpgradesClientProps> = ({
   armorList,
+  query,
 }) => {
   const armorInventoryQuery = useGetArmorInventoryQuery();
   const inventory = armorInventoryQuery.data?.armor;
@@ -25,6 +29,19 @@ export const UpgradesClient: Component<UpgradesClientProps> = ({
   useEffect(() => {
     dispatch(armorActions.setList(armorList.armors));
   }, [dispatch, armorList]);
+
+  useEffect(() => {
+    if (query.armor) {
+      dispatch(
+        modalActions.show({
+          modal: "edit-armor",
+          id: query.armor,
+        })
+      );
+    } else {
+      dispatch(modalActions.close("no armor selected"));
+    }
+  }, [dispatch, query]);
 
   if (armorInventoryQuery.isLoading || !inventory) {
     return <>Loading...</>;
@@ -91,17 +108,10 @@ export const UpgradesClient: Component<UpgradesClientProps> = ({
               <td className="pl-4 py-2">
                 <div className="flex flex-wrap gap-4">
                   {d.for.map((f) => (
-                    <button
+                    <Link
+                      href={`?armor=${f.armor}`}
+                      scroll={false}
                       key={`${f.armor}-${f.level}`}
-                      onClick={() => {
-                        console.log("clicked", f);
-                        dispatch(
-                          modalActions.show({
-                            modal: "edit-armor",
-                            id: f.armor,
-                          })
-                        );
-                      }}
                     >
                       {f.quantity}x
                       <Image
@@ -116,7 +126,7 @@ export const UpgradesClient: Component<UpgradesClientProps> = ({
                         height={24}
                       />
                       <Stars count={f.level} size={16} />
-                    </button>
+                    </Link>
                   ))}
                 </div>
               </td>
