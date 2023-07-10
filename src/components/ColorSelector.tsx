@@ -33,7 +33,7 @@ export const ColorSelector: Component<ColorSelectorProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-8 gap-2 w-full">
+    <div className="grid gap-1 w-full grid-cols-[repeat(8,1.3rem)]">
       {colors.map((color) => {
         const cssColor = colorMap[color] ?? "#000000";
         const checkColor = betterContrast(cssColor, ["#ffffff", "#000000"]);

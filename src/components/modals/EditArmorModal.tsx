@@ -18,6 +18,7 @@ import { StarIcon } from "../icons/star";
 import { ColorSelector } from "../ColorSelector";
 import { TrashIcon } from "../icons/trash";
 import { useRouter } from "next/navigation";
+import { Stars } from "../Stars";
 
 export const EditArmorModal: Component = () => {
   const dispatch = useAppDispatch();
@@ -57,12 +58,13 @@ export const EditArmorModal: Component = () => {
   return (
     <div className="p-6">
       <div
-        className="grid gap-2 grid-cols-[auto,minmax(64px,128px)]"
+        className="grid gap-4 grid-cols-[minmax(15rem,auto),minmax(64px,128px)]"
         style={{
           gridTemplateAreas: `
-            "title close"
-            "level image"
-            "dye   trash"
+            "title     close"
+            "level     image"
+            "dye       image"
+            "upgrades  trash"
           `,
         }}
       >
@@ -77,7 +79,8 @@ export const EditArmorModal: Component = () => {
           </h1>
           <div className="italic">{armor.setEnName}</div>
         </div>
-        <div style={{ gridArea: "image" }} className="border">
+
+        <div style={{ gridArea: "image" }} className="border aspect-square">
           <Image
             alt={`${armor.enName} with ${inventory.dye} dye`}
             src={armor.iconUrls[inventory.dye]!}
@@ -129,6 +132,36 @@ export const EditArmorModal: Component = () => {
                   }}
                 />
               </div>
+            )}
+          </div>
+        </div>
+
+        <div style={{ gridArea: "upgrades" }}>
+          <h2 className="font-bold">Remaining Upgrades</h2>
+          <div className="pl-4">
+            {armor.upgrades ? (
+              armor.upgrades.map(
+                (upgrade, i) =>
+                  i >= inventory.level && (
+                    <>
+                      <h3 key={`upgrade-header-${i}`}>
+                        <Stars count={i + 1} size={16} />
+                      </h3>
+                      <ul key={`upgrade-list-${i}`}>
+                        {upgrade.map((u) => (
+                          <li
+                            key={`ingredient-${u.material}`}
+                            className="list-disc ml-6"
+                          >
+                            {u.quantity}x {u.material}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )
+              )
+            ) : (
+              <p className="italic">Not upgradable</p>
             )}
           </div>
         </div>
