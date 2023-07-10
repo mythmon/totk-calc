@@ -69,6 +69,8 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
     );
   }
 
+  const inventory = armorInventoryQuery.data?.armor;
+
   return (
     <>
       <div className="mb-4">
@@ -83,7 +85,11 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
       </div>
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {collectedArmors.map((armor) => (
-          <ArmorCard key={armor.actorName} armor={armor} />
+          <ArmorCard
+            key={armor.actorName}
+            armor={armor}
+            dye={inventory?.[armor.actorName]?.dye ?? "Base"}
+          />
         ))}
       </div>
     </>
@@ -92,9 +98,10 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
 
 interface ArmorCardProps {
   armor: Armor;
+  dye: string;
 }
 
-const ArmorCard: Component<ArmorCardProps> = ({ armor }) => {
+const ArmorCard: Component<ArmorCardProps> = ({ armor, dye }) => {
   return (
     <Link href={`?armor=${armor.actorName}`} scroll={false}>
       <div className="bg-gray-200 rounded-lg p-2 pb-3 flex flex-col h-56">
@@ -110,7 +117,7 @@ const ArmorCard: Component<ArmorCardProps> = ({ armor }) => {
           width={128}
           height={128}
           alt={armor.enName}
-          src={armor.iconUrls["Base"]!}
+          src={armor.iconUrls[dye]!}
         />
       </div>
     </Link>
