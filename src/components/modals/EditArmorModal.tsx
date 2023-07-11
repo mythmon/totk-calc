@@ -4,7 +4,7 @@ import {
   usePatchArmorInventoryMutation,
   useGetArmorInventoryQuery,
   useRemoveArmorInventoryMutation,
-} from "@/state/services/totk";
+} from "@/state/services/inventory";
 import {
   type EditArmorModal as EditArmorModalProps,
   useModalProps,

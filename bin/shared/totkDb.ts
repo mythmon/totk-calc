@@ -396,12 +396,18 @@ export class MaterialData implements Material {
     return this.row.getField("ActorName", z.string());
   }
 
-  get sortKeys(): { type: number } {
-    return { type: this.row.getField("Inventory Order (By type)", z.number()) };
+  get sortKeys(): Material["sortKeys"] {
+    return {
+      name: this.name,
+      type: this.row
+        .getField("Inventory Order (By type)", z.number())
+        .toString()
+        .padStart(3, "0"),
+    };
   }
 
   get iconUrl(): string {
-    return `/images/material/${this.actorName}.avif`;
+    return `/images/materials/${this.actorName}.avif`;
   }
 
   private _getIconDownloadUrl(): string | null {

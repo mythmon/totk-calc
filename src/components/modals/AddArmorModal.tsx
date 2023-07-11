@@ -18,7 +18,7 @@ import { useSet } from "@/lib/client/hooks/useSet";
 import {
   usePatchArmorInventoryMutation,
   useGetArmorInventoryQuery,
-} from "@/state/services/totk";
+} from "@/state/services/inventory";
 import type { Component } from "@/components/component";
 
 const STAR = "★";

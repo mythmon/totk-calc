@@ -2,8 +2,8 @@ import { InventoryArmorRes } from "@/app/api/inventory/armor/types";
 import { type Armor, ArmorField } from "@/lib/shared/armor";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const totkApi = createApi({
-  reducerPath: "totkApi",
+export const inventoryApi = createApi({
+  reducerPath: "inventoryApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   tagTypes: ["InventoryArmor"],
   endpoints: (builder) => ({
@@ -25,7 +25,7 @@ export const totkApi = createApi({
       }),
       onQueryStarted: async (props, { dispatch, queryFulfilled }) => {
         const optimistic = dispatch(
-          totkApi.util.updateQueryData(
+          inventoryApi.util.updateQueryData(
             "getArmorInventory",
             undefined,
             (draft) => {
@@ -40,7 +40,7 @@ export const totkApi = createApi({
         try {
           const { data } = await queryFulfilled;
           dispatch(
-            totkApi.util.updateQueryData(
+            inventoryApi.util.updateQueryData(
               "getArmorInventory",
               undefined,
               () => data
@@ -63,7 +63,7 @@ export const totkApi = createApi({
       }),
       onQueryStarted: async (actorName, { dispatch, queryFulfilled }) => {
         const optimistic = dispatch(
-          totkApi.util.updateQueryData(
+          inventoryApi.util.updateQueryData(
             "getArmorInventory",
             undefined,
             (draft) => {
@@ -75,7 +75,7 @@ export const totkApi = createApi({
         try {
           const { data } = await queryFulfilled;
           dispatch(
-            totkApi.util.updateQueryData(
+            inventoryApi.util.updateQueryData(
               "getArmorInventory",
               undefined,
               () => data
@@ -93,4 +93,4 @@ export const {
   useGetArmorInventoryQuery,
   usePatchArmorInventoryMutation,
   useRemoveArmorInventoryMutation,
-} = totkApi;
+} = inventoryApi;

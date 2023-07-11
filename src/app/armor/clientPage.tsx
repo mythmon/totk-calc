@@ -9,7 +9,7 @@ import { modalActions } from "@/state/slices/modal";
 import { useEffect } from "react";
 import { armorActions } from "@/state/slices/armor";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useGetArmorInventoryQuery } from "@/state/services/totk";
+import { useGetArmorInventoryQuery } from "@/state/services/inventory";
 import Link from "next/link";
 import type { ArmorListQuery } from "./page";
 

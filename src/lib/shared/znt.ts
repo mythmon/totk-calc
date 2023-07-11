@@ -1,11 +1,11 @@
 import { err, ok, type Result } from "neverthrow";
 import type { ParseParams, ZodError, ZodSchema, ZodTypeDef } from "zod";
 
-export type ZodSchemaNeverThrow<O, D extends ZodTypeDef, I> = ZodSchema<
+export type ZodSchemaNeverThrow<
   O,
-  D,
-  I
-> & {
+  D extends ZodTypeDef = ZodTypeDef,
+  I = unknown
+> = ZodSchema<O, D, I> & {
   parseNt: (
     data: unknown,
     params?: Partial<ParseParams>
