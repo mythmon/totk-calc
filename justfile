@@ -13,10 +13,10 @@ build: build-data build-images build-next
 build-dev: build-data build-images
 
 build-data: build-bin
-  node build/bin/extract-data.js
+  TS_NODE_BASEURL=./build node -r tsconfig-paths/register build/bin/extract-data.js
 
 build-images: build-bin
-  node build/bin/extract-images.js
+  TS_NODE_BASEURL=./build node -r tsconfig-paths/register build/bin/extract-images.js
 
 build-next:
   yarn next build

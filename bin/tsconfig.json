@@ -11,6 +11,6 @@
     },
     "outDir": "../build"
   },
-  "include": ["*.ts"],
+  "include": ["*.ts", "../src/lib/shared"],
   "exclude": ["node_modules"]
 }

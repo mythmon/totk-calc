@@ -12,7 +12,7 @@ import {
 } from "@/state/slices/modal";
 import { useCallback } from "react";
 import Image from "next/image";
-import type { Armor } from "@/lib/shared/armor";
+import { DyeColor, type Armor } from "@/lib/shared/armor";
 import { CheckIcon } from "../icons/check";
 import { StarIcon } from "../icons/star";
 import { ColorSelector } from "../ColorSelector";
@@ -124,11 +124,13 @@ export const EditArmorModal: Component = () => {
                   colors={armor.colors}
                   selected={inventory.dye}
                   onChange={(newDye) => {
-                    editArmorMutation({
-                      actorName: armor.actorName,
-                      ...inventory,
-                      dye: newDye,
-                    });
+                    DyeColor.parseNt(newDye).map((dye) =>
+                      editArmorMutation({
+                        actorName: armor.actorName,
+                        ...inventory,
+                        dye,
+                      })
+                    );
                   }}
                 />
               </div>

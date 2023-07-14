@@ -10,7 +10,7 @@ import {
   useEffect,
   useMemo,
 } from "react";
-import type { Armor } from "@/lib/shared/armor";
+import { DyeColor, type Armor } from "@/lib/shared/armor";
 import Image from "next/image";
 import { modalActions } from "@/state/slices/modal";
 import { Button } from "@/components/form/Button";
@@ -27,7 +27,7 @@ export const AddArmorModal: Component = () => {
   const dispatch = useAppDispatch();
   const armorList = useArmorList();
   const [armor, setArmor] = useState<Armor | null>(null);
-  const [dye, setDye] = useState<string>("Base");
+  const [dye, setDye] = useState<DyeColor>("Base");
   const [level, setLevel] = useState<number>(0);
   const armorInventoryQuery = useGetArmorInventoryQuery();
   const [addArmorMutation, addArmorResult] = usePatchArmorInventoryMutation();
@@ -168,7 +168,9 @@ export const AddArmorModal: Component = () => {
               <Select
                 name="dye"
                 value={dye}
-                onChange={(ev) => setDye(ev.target.value)}
+                onChange={(ev) =>
+                  DyeColor.parseNt(ev.target.value).map((dye) => setDye(dye))
+                }
                 disabled={!armor}
               >
                 {[...(armor?.colors ?? [])].sort(compareDyes).map((dye) => (

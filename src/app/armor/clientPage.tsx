@@ -2,24 +2,35 @@
 
 import type { Component } from "@/components/component";
 import Image from "next/image";
-import { type Armor } from "@/lib/shared/armor";
+import { DyeColor, type Armor } from "@/lib/shared/armor";
 import { Button } from "@/components/form/Button";
 import { useAppDispatch } from "@/state/hooks";
 import { modalActions } from "@/state/slices/modal";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useGetArmorInventoryQuery } from "@/state/services/inventory";
 import Link from "next/link";
 import type { ArmorListQuery } from "./page";
 import { useGetArmorsQuery } from "@/state/services/static";
+import { znt } from "@/lib/shared/znt";
+import { z } from "zod";
+import { type UIEvent } from "react";
 
 interface ArmorListClientProps {
   query: ArmorListQuery;
 }
 
+const SortKey = znt(
+  z.union([z.literal("name"), z.literal("bodyPart"), z.literal("set")])
+);
+
+type SortKey = z.infer<typeof SortKey>;
+
 export const ArmorListClient: Component<ArmorListClientProps> = ({ query }) => {
   const session = useUser();
   const dispatch = useAppDispatch();
+  const [sortBy, setSortBy] = useState<SortKey>("name");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
     if (query.armor) {
@@ -33,6 +44,29 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({ query }) => {
       dispatch(modalActions.close("no armor selected"));
     }
   }, [dispatch, query]);
+
+  const handleSortClick = useCallback(
+    (ev: UIEvent<HTMLButtonElement>) => {
+      const key = SortKey.parse(ev.currentTarget.dataset["sortBy"]);
+      if (sortBy === key) {
+        setSortDir((dir) => (dir === "asc" ? "desc" : "asc"));
+      } else {
+        setSortBy(key);
+        setSortDir("asc");
+      }
+    },
+    [sortBy]
+  );
+
+  const sortIndicator = useCallback(
+    (key: SortKey) => {
+      if (key === sortBy) {
+        return sortDir === "asc" ? "↑" : "↓";
+      }
+      return null;
+    },
+    [sortBy, sortDir]
+  );
 
   const armorsQuery = useGetArmorsQuery();
   const armorInventoryQuery = useGetArmorInventoryQuery(undefined, {
@@ -57,6 +91,11 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({ query }) => {
   const collectedArmors = armors.filter((a) =>
     Object.hasOwn(inventory, a.actorName)
   );
+  collectedArmors.sort((a, b) => {
+    let rv = 0;
+    rv = a.sortKeys[sortBy].localeCompare(b.sortKeys[sortBy]);
+    return sortDir === "asc" ? rv : -rv;
+  });
 
   if (!session.user) {
     return (
@@ -81,6 +120,20 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({ query }) => {
           </Button>
         </p>
       </div>
+
+      <div className="mb-4">
+        Sort by:
+        <Button onClick={handleSortClick} data-sort-by="name">
+          Name {sortIndicator("name")}
+        </Button>
+        <Button onClick={handleSortClick} data-sort-by="set">
+          Set {sortIndicator("set")}
+        </Button>
+        <Button onClick={handleSortClick} data-sort-by="bodyPart">
+          Body Part {sortIndicator("bodyPart")}
+        </Button>
+      </div>
+
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {collectedArmors.map((armor) => (
           <ArmorCard
@@ -96,7 +149,7 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({ query }) => {
 
 interface ArmorCardProps {
   armor: Armor;
-  dye: string;
+  dye: DyeColor;
 }
 
 const ArmorCard: Component<ArmorCardProps> = ({ armor, dye }) => {

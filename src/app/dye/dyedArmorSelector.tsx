@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import type { Component } from "@/components/component";
-import type { Armor } from "@/lib/shared/armor";
+import { DyeColor, type Armor } from "@/lib/shared/armor";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { Select } from "@/components/form/Select";
 import Head from "next/head";
@@ -30,7 +30,7 @@ export const DyedArmorSelector: Component<ArmorListClientProps> = ({
     if (!defaultArmor) throw new Error("no armors found");
     return defaultArmor.actorName;
   });
-  const [selectedColor, setSelectedColor] = useState<string>("Base");
+  const [selectedColor, setSelectedColor] = useState<DyeColor>("Base");
   const selectedArmor = filteredArmors.find(
     (armor) => armor.actorName === selectedArmorCode
   );
@@ -94,7 +94,9 @@ export const DyedArmorSelector: Component<ArmorListClientProps> = ({
           <ColorSelector
             colors={selectedArmor.colors}
             selected={selectedColor}
-            onChange={setSelectedColor}
+            onChange={(newDye) =>
+              DyeColor.parseNt(newDye).map(setSelectedColor)
+            }
           />
         )}
       </div>

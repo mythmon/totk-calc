@@ -4,7 +4,7 @@ import path from "node:path";
 import * as excelJs from "exceljs";
 import type { Workbook } from "exceljs";
 import fetch from "node-fetch";
-import { Armor, UpgradeIngredient } from "@/lib/shared/armor";
+import { Armor, DyeColor, UpgradeIngredient } from "@/lib/shared/armor";
 import { Material } from "@/lib/shared/material";
 import z, { RefinementCtx, ZodSchema, ZodTypeDef } from "zod";
 
@@ -197,22 +197,21 @@ export class ArmorData implements Armor {
   toJSON(): Armor {
     const keys: (keyof Armor)[] = [
       "actorName",
-      "enName",
       "belongingSet",
-      "setEnName",
-      "hasUpgrades",
-      "colors",
-      "iconUrls",
-      "slot",
-      "buyPriceRupees",
       "buyPricePoes",
+      "buyPriceRupees",
+      "colors",
       "defenses",
+      "enName",
+      "hasUpgrades",
+      "iconUrls",
       "sellingPrices",
+      "setEnName",
+      "slot",
+      "sortKeys",
       "upgrades",
     ];
-    return Object.fromEntries(
-      keys.map((key) => [key, this[key]])
-    ) as unknown as Armor;
+    return Armor.parse(Object.fromEntries(keys.map((key) => [key, this[key]])));
   }
 
   get actorName(): string {
@@ -231,7 +230,7 @@ export class ArmorData implements Armor {
     return this.dataRow.getField("Buy Price (Poes)", zHyphenNumber);
   }
 
-  get colors() {
+  get colors(): DyeColor[] {
     return [
       "Base",
       ...this.iconRow.fieldNames
@@ -243,8 +242,11 @@ export class ArmorData implements Armor {
         .filter(([_name, url]) => url !== null)
         .flatMap(([name, _url]) => {
           const match = name.match(/Inventory Icon \((?<color>[^)]+)\)/);
-          if (match) return [match.groups!["color"]!];
-          return [];
+          const color = match?.groups?.["color"];
+          return DyeColor.parseNt(color).match(
+            (color) => [color],
+            () => []
+          );
         }),
     ];
   }
@@ -342,6 +344,20 @@ export class ArmorData implements Armor {
       default:
         throw new Error(`unexpected slot ${slot} from ${this.actorName}`);
     }
+  }
+
+  get sortKeys(): Armor["sortKeys"] {
+    return {
+      name: this.enName,
+      bodyPart: this.dataRow
+        .getField("Inventory Order (By body part)", z.number())
+        .toString()
+        .padStart(3, "0"),
+      set: this.dataRow
+        .getField("Inventory Order (By set)", z.number())
+        .toString()
+        .padStart(3, "0"),
+    };
   }
 
   get upgrades(): null | UpgradeIngredient[][] {
