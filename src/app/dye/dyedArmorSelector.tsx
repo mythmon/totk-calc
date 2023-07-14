@@ -2,22 +2,22 @@
 
 import Image from "next/image";
 import type { Component } from "@/components/component";
-import type { Armor, ArmorListResponse } from "@/lib/shared/armor";
+import type { Armor } from "@/lib/shared/armor";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { Select } from "@/components/form/Select";
 import Head from "next/head";
 import { ColorSelector } from "../../components/ColorSelector";
 
 interface ArmorListClientProps {
-  armorData: ArmorListResponse;
+  armors: Armor[];
   slot: Armor["slot"];
 }
 
 export const DyedArmorSelector: Component<ArmorListClientProps> = ({
-  armorData: armorList,
+  armors,
   slot,
 }) => {
-  const filteredArmors = armorList.armors
+  const filteredArmors = armors
     .filter((a) => a.slot === slot)
     .sort((a, b) => a.enName.localeCompare(b.enName));
   if (filteredArmors.length === 0) {

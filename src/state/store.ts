@@ -3,19 +3,19 @@ import { modalReducer } from "./slices/modal";
 import { armorReducer } from "./slices/armor";
 import { inventoryApi } from "./services/inventory";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
-import { materialsApi } from "./services/materials";
+import { staticApi } from "./services/static";
 
 export const store = configureStore({
   reducer: {
     modal: modalReducer,
     armor: armorReducer,
     [inventoryApi.reducerPath]: inventoryApi.reducer,
-    [materialsApi.reducerPath]: materialsApi.reducer,
+    [staticApi.reducerPath]: staticApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(inventoryApi.middleware)
-      .concat(materialsApi.middleware),
+      .concat(staticApi.middleware),
 });
 
 setupListeners(store.dispatch);

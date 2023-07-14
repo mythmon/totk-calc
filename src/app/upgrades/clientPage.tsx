@@ -1,26 +1,27 @@
 "use client";
 
 import type { Component } from "@/components/component";
-import type { ArmorField, ArmorListResponse } from "@/lib/shared/armor";
+import type { Armor, ArmorField } from "@/lib/shared/armor";
 import { useGetArmorInventoryQuery } from "@/state/services/inventory";
 import d3 from "@/lib/shared/d3";
 import Image from "next/image";
 import { Stars } from "@/components/Stars";
 import { useAppDispatch } from "@/state/hooks";
 import { modalActions } from "@/state/slices/modal";
-import { armorActions } from "@/state/slices/armor";
 import { useCallback, useEffect, useState } from "react";
 import type { UpgradeQuery } from "./page";
 import Link from "next/link";
-import { useGetMaterialsQuery } from "@/state/services/materials";
 import type { Material } from "@/lib/shared/material";
 import { Button } from "@/components/form/Button";
 import { type UIEvent } from "react";
 import { znt } from "@/lib/shared/znt";
 import { z } from "zod";
+import {
+  useGetArmorsQuery,
+  useGetMaterialsQuery,
+} from "@/state/services/static";
 
 interface UpgradesClientProps {
-  armorList: ArmorListResponse;
   query: UpgradeQuery;
 }
 
@@ -30,20 +31,14 @@ const SortKey = znt(
 
 type SortKey = z.infer<typeof SortKey>;
 
-export const UpgradesClient: Component<UpgradesClientProps> = ({
-  armorList,
-  query,
-}) => {
+export const UpgradesClient: Component<UpgradesClientProps> = ({ query }) => {
   const armorInventoryQuery = useGetArmorInventoryQuery();
   const materialsQuery = useGetMaterialsQuery();
+  const armorsQuery = useGetArmorsQuery();
   const dispatch = useAppDispatch();
 
   const [sortBy, setSortBy] = useState<SortKey>("name");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
-
-  useEffect(() => {
-    dispatch(armorActions.setList(armorList.armors));
-  }, [dispatch, armorList]);
 
   useEffect(() => {
     if (query.armor) {
@@ -83,19 +78,21 @@ export const UpgradesClient: Component<UpgradesClientProps> = ({
   );
 
   const inventory = armorInventoryQuery.data?.armor;
-  const materials = materialsQuery.data?.materials;
+  const armors = armorsQuery.data;
+  const materials = materialsQuery.data;
 
   if (
     armorInventoryQuery.isLoading ||
     !inventory ||
     materialsQuery.isLoading ||
-    !materials
+    !materials ||
+    !armors
   ) {
     return <>Loading...</>;
   }
 
   const { materialData, armorByActor } = generateData({
-    armors: armorList.armors,
+    armors,
     inventory,
     materials,
     sortBy,
@@ -179,7 +176,7 @@ export const UpgradesClient: Component<UpgradesClientProps> = ({
 };
 
 interface GenerateDataProps {
-  armors: ArmorListResponse["armors"];
+  armors: Armor[];
   inventory: Record<string, ArmorField | null>;
   materials: Material[];
   sortBy: SortKey;

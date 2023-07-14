@@ -2,26 +2,22 @@
 
 import type { Component } from "@/components/component";
 import Image from "next/image";
-import { type Armor, type ArmorListResponse } from "@/lib/shared/armor";
+import { type Armor } from "@/lib/shared/armor";
 import { Button } from "@/components/form/Button";
 import { useAppDispatch } from "@/state/hooks";
 import { modalActions } from "@/state/slices/modal";
 import { useEffect } from "react";
-import { armorActions } from "@/state/slices/armor";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useGetArmorInventoryQuery } from "@/state/services/inventory";
 import Link from "next/link";
 import type { ArmorListQuery } from "./page";
+import { useGetArmorsQuery } from "@/state/services/static";
 
 interface ArmorListClientProps {
-  armorList: ArmorListResponse;
   query: ArmorListQuery;
 }
 
-export const ArmorListClient: Component<ArmorListClientProps> = ({
-  armorList,
-  query,
-}) => {
+export const ArmorListClient: Component<ArmorListClientProps> = ({ query }) => {
   const session = useUser();
   const dispatch = useAppDispatch();
 
@@ -38,38 +34,40 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({
     }
   }, [dispatch, query]);
 
-  useEffect(() => {
-    dispatch(armorActions.setList(armorList.armors));
-  }, [dispatch, armorList]);
-
+  const armorsQuery = useGetArmorsQuery();
   const armorInventoryQuery = useGetArmorInventoryQuery(undefined, {
     skip: !session.user,
   });
 
   const loading =
-    session.isLoading || (session.user && armorInventoryQuery.isLoading);
+    session.isLoading ||
+    (session.user && armorInventoryQuery.isLoading) ||
+    armorsQuery.isLoading;
+  if (loading) {
+    return <>Loading...</>;
+  }
 
   if (armorInventoryQuery.isError) {
     throw armorInventoryQuery.error;
   }
 
-  const collectedArmors = armorList.armors.filter((a) =>
-    Object.hasOwn(armorInventoryQuery.data?.armor ?? {}, a.actorName)
-  );
+  const armors = armorsQuery.data ?? [];
+  const inventory = armorInventoryQuery.data?.armor ?? {};
 
-  if (loading) {
-    return <>Loading...</>;
-  }
+  const collectedArmors = armors.filter((a) =>
+    Object.hasOwn(inventory, a.actorName)
+  );
 
   if (!session.user) {
     return (
       <p>
-        <a href="/api/auth/login">Login</a> to start tracking armors.
+        <a className="underline text-blue-700" href="/api/auth/login">
+          Login
+        </a>{" "}
+        to start tracking armors.
       </p>
     );
   }
-
-  const inventory = armorInventoryQuery.data?.armor;
 
   return (
     <>
