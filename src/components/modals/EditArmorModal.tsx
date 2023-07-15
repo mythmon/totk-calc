@@ -1,5 +1,5 @@
 import type { Component } from "@/components/component";
-import { useAppDispatch, useAppSelector } from "@/state/hooks";
+import { useAppDispatch } from "@/state/hooks";
 import {
   usePatchArmorInventoryMutation,
   useGetArmorInventoryQuery,
@@ -19,20 +19,18 @@ import { ColorSelector } from "../ColorSelector";
 import { TrashIcon } from "../icons/trash";
 import { useRouter } from "next/navigation";
 import { Stars } from "../Stars";
+import { useGetArmorsQuery } from "@/state/services/static";
 
 export const EditArmorModal: Component = () => {
   const dispatch = useAppDispatch();
   const props = useModalProps<EditArmorModalProps>("edit-armor");
-  const armor = useAppSelector((state) => {
-    const list = state.armor.list;
-    if (list.status === "loaded")
-      return list.armors.find((a) => a.actorName === props.id);
-    return null;
-  });
+  const armorsQuery = useGetArmorsQuery();
   const armorInventoryQuery = useGetArmorInventoryQuery();
   const [editArmorMutation] = usePatchArmorInventoryMutation();
   const [removeArmorMutation] = useRemoveArmorInventoryMutation();
   const router = useRouter();
+
+  const armor = armorsQuery.data?.find((a) => a.actorName === props.id);
 
   const inventory = armor
     ? armorInventoryQuery.data?.armor[armor.actorName]

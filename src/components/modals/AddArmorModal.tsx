@@ -1,7 +1,6 @@
 "use client";
 import { useAppDispatch } from "@/state/hooks";
 import { Select } from "@/components/form/Select";
-import { useArmorList } from "@/state/slices/armor";
 import {
   useState,
   type ChangeEvent,
@@ -20,31 +19,32 @@ import {
   useGetArmorInventoryQuery,
 } from "@/state/services/inventory";
 import type { Component } from "@/components/component";
+import { useGetArmorsQuery } from "@/state/services/static";
 
 const STAR = "★";
 
 export const AddArmorModal: Component = () => {
   const dispatch = useAppDispatch();
-  const armorList = useArmorList();
   const [armor, setArmor] = useState<Armor | null>(null);
   const [dye, setDye] = useState<DyeColor>("Base");
   const [level, setLevel] = useState<number>(0);
   const armorInventoryQuery = useGetArmorInventoryQuery();
   const [addArmorMutation, addArmorResult] = usePatchArmorInventoryMutation();
+  const armorsQuery = useGetArmorsQuery();
 
   const { value: invalidReasons, set: setValidation } = useSet<string>();
   const armorOptions = useMemo(() => {
     const inventory = armorInventoryQuery.data;
     if (!inventory) return [];
-    if (armorList.status === "loaded") {
-      const rv = armorList.armors.filter(
+    if (armorsQuery.isSuccess) {
+      const rv = armorsQuery.data!.filter(
         (a) => !Object.hasOwn(inventory.armor, a.actorName)
       );
       rv.sort((a, b) => a.enName.localeCompare(b.enName));
       return rv;
     }
     return [];
-  }, [armorInventoryQuery.data, armorList]);
+  }, [armorInventoryQuery.data, armorsQuery.data, armorsQuery.isSuccess]);
 
   useEffect(() => {
     setValidation("no-armor", !armor);
@@ -68,8 +68,8 @@ export const AddArmorModal: Component = () => {
 
   const handleArmorChange = useCallback(
     (ev: ChangeEvent<HTMLSelectElement>) => {
-      if (armorList.status !== "loaded") return;
-      const armor = armorList.armors.find(
+      if (!armorsQuery.isSuccess) return;
+      const armor = armorsQuery.data!.find(
         (a: Armor) => a.actorName === ev.target.value
       );
       if (armor) {
@@ -82,7 +82,7 @@ export const AddArmorModal: Component = () => {
         }
       }
     },
-    [armorList, dye, level, setLevel, setDye]
+    [armorsQuery.isSuccess, armorsQuery.data, dye, level]
   );
 
   const handleSubmit = useCallback(
@@ -96,7 +96,7 @@ export const AddArmorModal: Component = () => {
 
   return (
     <div className="p-6">
-      {armorList.status === "loaded" ? (
+      {armorsQuery.isSuccess ? (
         <div
           className="grid gap-4 grid-cols-[auto,minmax(64px,128px)]"
           style={{

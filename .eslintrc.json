@@ -6,5 +6,5 @@
     "plugin:@tanstack/eslint-plugin-query/recommended",
     "plugin:neverthrow/recommended"
   ],
-  "ignorePatterns": ["./.next/**/*"]
+  "ignorePatterns": ["./.next/**/*", "./build/**/*"]
 }

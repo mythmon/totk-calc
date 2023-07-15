@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { modalReducer } from "./slices/modal";
-import { armorReducer } from "./slices/armor";
 import { inventoryApi } from "./services/inventory";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { staticApi } from "./services/static";
@@ -8,7 +7,6 @@ import { staticApi } from "./services/static";
 export const store = configureStore({
   reducer: {
     modal: modalReducer,
-    armor: armorReducer,
     [inventoryApi.reducerPath]: inventoryApi.reducer,
     [staticApi.reducerPath]: staticApi.reducer,
   },
