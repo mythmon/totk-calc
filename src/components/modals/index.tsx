@@ -4,25 +4,19 @@ import type { Component } from "@/components/component";
 import { useAppSelector } from "@/state/hooks";
 import { AddArmorModal } from "./AddArmorModal";
 import { EditArmorModal } from "./EditArmorModal";
+import type { ModalSpec } from "@/state/slices/modal";
+
+const modalComponents: Record<ModalSpec["modal"], Component> = {
+  "add-armor": AddArmorModal,
+  "edit-armor": EditArmorModal,
+};
 
 export const Modals: Component = () => {
   const modalState = useAppSelector((state) => state.modal);
 
-  let Modal: Component;
-  switch (modalState.name) {
-    case null:
-      return null;
-    case "add-armor": {
-      Modal = AddArmorModal;
-      break;
-    }
-    case "edit-armor": {
-      Modal = EditArmorModal;
-      break;
-    }
-    default:
-      throw new Error(`unknown modal ${(modalState as any).modal}`);
-  }
+  if (modalState?.name === null) return null;
+  let Modal: Component = modalComponents[modalState.name];
+  if (!Modal) throw new Error(`unknown modal ${(modalState as any).modal}`);
 
   return (
     <>

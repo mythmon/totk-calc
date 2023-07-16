@@ -15,7 +15,7 @@ import { modalActions } from "@/state/slices/modal";
 import { Button } from "@/components/form/Button";
 import { useSet } from "@/lib/client/hooks/useSet";
 import {
-  usePatchArmorInventoryMutation,
+  usePatchOneArmorInventoryMutation,
   useGetArmorInventoryQuery,
 } from "@/state/services/inventory";
 import type { Component } from "@/components/component";
@@ -29,7 +29,8 @@ export const AddArmorModal: Component = () => {
   const [dye, setDye] = useState<DyeColor>("Base");
   const [level, setLevel] = useState<number>(0);
   const armorInventoryQuery = useGetArmorInventoryQuery();
-  const [addArmorMutation, addArmorResult] = usePatchArmorInventoryMutation();
+  const [addArmorMutation, addArmorResult] =
+    usePatchOneArmorInventoryMutation();
   const armorsQuery = useGetArmorsQuery();
 
   const { value: invalidReasons, set: setValidation } = useSet<string>();

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-interface UseSetReturn<T> {
+export interface UseSetReturn<T> {
   /** The Current contents of the set. */
   value: Set<T>;
   /** Ensure the passed item is in the set. */
@@ -38,7 +38,6 @@ export function useSet<T>(initial: Iterable<T> = []): UseSetReturn<T> {
     (item: T) =>
       setValue((localValue) => {
         if (!localValue.has(item)) {
-          console.debug("adding", item);
           return new Set([...localValue, item]);
         }
         return localValue;
@@ -50,7 +49,6 @@ export function useSet<T>(initial: Iterable<T> = []): UseSetReturn<T> {
     (item: T) =>
       setValue((localValue) => {
         if (localValue.has(item)) {
-          console.debug("removing", item);
           return new Set([...localValue].filter((d) => d !== item));
         }
         return localValue;

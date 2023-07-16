@@ -134,7 +134,7 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({ query }) => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
         {collectedArmors.map((armor) => (
           <ArmorCard
             key={armor.actorName}
@@ -142,6 +142,12 @@ export const ArmorListClient: Component<ArmorListClientProps> = ({ query }) => {
             dye={inventory?.[armor.actorName]?.dye ?? "Base"}
           />
         ))}
+      </div>
+
+      <div>
+        <Link href="/armor/bulk" className="underline to-blue-600">
+          Bulk add armors
+        </Link>
       </div>
     </>
   );

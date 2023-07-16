@@ -12,7 +12,7 @@ export const inventoryApi = createApi({
       providesTags: ["InventoryArmor"],
     }),
 
-    patchArmorInventory: builder.mutation<
+    patchOneArmorInventory: builder.mutation<
       InventoryArmorRes,
       { actorName: Armor["actorName"] } & ArmorField
     >({
@@ -49,6 +49,29 @@ export const inventoryApi = createApi({
         } catch {
           optimistic.undo();
         }
+      },
+    }),
+
+    patchManyArmorInventory: builder.mutation<
+      InventoryArmorRes,
+      { [actorName: string]: ArmorField | null }
+    >({
+      query: (armor) => ({
+        url: `inventory/armor`,
+        method: "PATCH",
+        body: {
+          armor,
+        } satisfies InventoryArmorRes,
+      }),
+      onQueryStarted: async (_props, { dispatch, queryFulfilled }) => {
+        const { data } = await queryFulfilled;
+        dispatch(
+          inventoryApi.util.updateQueryData(
+            "getArmorInventory",
+            undefined,
+            () => data
+          )
+        );
       },
     }),
 
@@ -91,6 +114,7 @@ export const inventoryApi = createApi({
 
 export const {
   useGetArmorInventoryQuery,
-  usePatchArmorInventoryMutation,
+  usePatchOneArmorInventoryMutation,
+  usePatchManyArmorInventoryMutation,
   useRemoveArmorInventoryMutation,
 } = inventoryApi;
