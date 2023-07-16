@@ -1,7 +1,7 @@
 import type { Component } from "@/components/component";
 import { useAppDispatch } from "@/state/hooks";
 import {
-  usePatchArmorInventoryMutation,
+  usePatchOneArmorInventoryMutation,
   useGetArmorInventoryQuery,
   useRemoveArmorInventoryMutation,
 } from "@/state/services/inventory";
@@ -26,7 +26,7 @@ export const EditArmorModal: Component = () => {
   const props = useModalProps<EditArmorModalProps>("edit-armor");
   const armorsQuery = useGetArmorsQuery();
   const armorInventoryQuery = useGetArmorInventoryQuery();
-  const [editArmorMutation] = usePatchArmorInventoryMutation();
+  const [editArmorMutation] = usePatchOneArmorInventoryMutation();
   const [removeArmorMutation] = useRemoveArmorInventoryMutation();
   const router = useRouter();
 

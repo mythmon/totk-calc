@@ -115,7 +115,7 @@ const BulkAddArmor: Component = () => {
             .map(([setEnName, bySlot]) => (
               <tr key={`set-${setEnName}`} className="mb-2 border-b">
                 <th className="text-start">{setEnName}</th>
-                {(["head", "upper", "lower"] as Slot[]).map((slot, i) => (
+                {(["head", "upper", "lower"] as Slot[]).map((slot) => (
                   <td
                     key={`set-${setEnName}-slot-${slot}`}
                     className="text-center ml-4 w-[100px]"

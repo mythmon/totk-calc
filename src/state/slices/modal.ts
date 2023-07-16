@@ -7,7 +7,7 @@ export type ModalState = {
   props: null | Omit<ModalSpec, "modal">;
 };
 
-export type ModalSpec = AddArmorModal | EditArmorModal | BulkAddArmorModal;
+export type ModalSpec = AddArmorModal | EditArmorModal;
 
 export type ModalComponent<T extends ModalSpec> = Component<T>;
 
@@ -18,10 +18,6 @@ export interface AddArmorModal {
 export interface EditArmorModal {
   modal: "edit-armor";
   id: string;
-}
-
-export interface BulkAddArmorModal {
-  modal: "bulk-add-armor";
 }
 
 export function useModalProps<T extends ModalSpec>(name: T["modal"]): T {
